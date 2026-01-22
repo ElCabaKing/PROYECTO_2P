@@ -1,0 +1,70 @@
+services: 
+  postgres_base:
+    image: "postgres:18"
+    container_name: "baseProyecto2"
+    environment:
+       POSTGRES_USER: postgres
+       POSTGRES_PASSWORD: contrasenaparaelenv
+       POSTGRES_DB: proyectoP2
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_baseP2:/var/lib/postgresql
+      - ./zinitdb:/docker-entrypoint-initdb.d
+
+  administracion_service:
+    container_name: "AdministracionService"
+    build: ./services/Administracion
+    env_file: 
+      - ./services/Administracion/.env
+    depends_on:
+      - postgres_base
+    volumes:
+      - ./services/Administracion:/app
+    ports:
+      - "5001:5001" 
+    command: "flask --app src.app run --host=0.0.0.0 --port=5001 --debug"
+
+  reservas_service:
+    container_name: "ReservasService"
+    build: ./services/Reservas
+    env_file: 
+      - ./services/Reservas/.env
+    depends_on:
+      - postgres_base
+    volumes:
+      - ./services/Reservas:/app
+    ports:
+      - "5002:5002" 
+    command: "flask --app src.app run --host=0.0.0.0 --port=5002 --debug"
+
+
+  seguridad_service:
+    container_name: "SeguridadService"
+    build: ./services/Seguridad
+    env_file: 
+      - ./services/Seguridad/.env
+    depends_on:
+      - postgres_base
+    volumes:
+      - ./services/Seguridad:/app
+    ports:
+      - "5003:5003" 
+    command: "flask --app src.app run --host=0.0.0.0 --port=5003 --debug"
+
+
+  frontend:
+    container_name: "proyecto2Frontend"
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: "pnpm run dev"
+volumes:
+  db_baseP2:
+
+
+    
+    
