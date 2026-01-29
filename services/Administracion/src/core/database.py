@@ -1,9 +1,9 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-from app.core.config import Parametros
-from app.core.logs import HandleLogs
-from app.shared.response import internal_response
+from src.core.config import Parametros
+from src.core.logs import HandleLogs
+from src.shared.response import internal_response
 
 
 def conn_db():
