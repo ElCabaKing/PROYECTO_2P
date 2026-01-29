@@ -11,19 +11,25 @@ services:
     volumes:
       - db_baseP2:/var/lib/postgresql
       - ./zinitdb:/docker-entrypoint-initdb.d
+    networks:
+      - proyecto2-network
 
   administracion_service:
     container_name: "AdministracionService"
-    build: ./services/Administracion
+    build:
+      context: ./services/Administracion
+      dockerfile: Dockerfile
+    restart: unless-stopped
     env_file: 
       - ./services/Administracion/.env
     depends_on:
-      - postgres_base
+      postgres_base:
     volumes:
       - ./services/Administracion:/app
     ports:
-      - "5001:5001" 
-    command: "flask --app src.app run --host=0.0.0.0 --port=5001 --debug"
+      - "5001:5001"
+    networks:
+      - proyecto2-network
 
   reservas_service:
     container_name: "ReservasService"
@@ -37,6 +43,8 @@ services:
     ports:
       - "5002:5002" 
     command: "flask --app src.app run --host=0.0.0.0 --port=5002 --debug"
+    networks:
+      - proyecto2-network
 
 
   seguridad_service:
@@ -51,6 +59,8 @@ services:
     ports:
       - "5003:5003" 
     command: "flask --app src.app run --host=0.0.0.0 --port=5003 --debug"
+    networks:
+      - proyecto2-network
 
 
   frontend:
@@ -62,9 +72,31 @@ services:
       - ./frontend:/app
       - /app/node_modules
     command: "pnpm run dev"
+    networks:
+      - proyecto2-network
+
+
+  nginx:
+    container_name: "NginxGateway"
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - administracion_service
+      - reservas_service
+      - seguridad_service
+    restart: unless-stopped
+    networks:
+      - proyecto2-network
+
 volumes:
   db_baseP2:
 
 
-    
+networks:
+  proyecto2-network:
+    driver: bridge
     
