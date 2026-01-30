@@ -9,8 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "axios": "^1.13.4",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.563.0",
     "next": "16.1.4",
     "react": "19.2.3",
+    "react-calendar": "^6.0.0",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
@@ -18,9 +22,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "daisyui": "^5.5.14",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "browserslist": "> 1%"
 }
