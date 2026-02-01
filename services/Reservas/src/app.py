@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 
 
@@ -6,6 +7,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 def create_app():
 
     app = Flask(__name__)
+    CORS(app)
     
     # Swagger config
     SWAGGER_URL = '/swagger'
@@ -15,7 +17,7 @@ def create_app():
         SWAGGER_URL,
         API_URL,
         config={
-            'app_name': "Mi API Flask"
+            'app_name': "Reserva"
         }
     )   
 

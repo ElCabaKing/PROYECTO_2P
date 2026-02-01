@@ -1,4 +1,6 @@
 flask
 flask-cors
 flask-swagger-ui
+flask-restful
+psycopg2
 python-dotenv
