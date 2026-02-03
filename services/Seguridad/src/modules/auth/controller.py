@@ -21,6 +21,8 @@ class AuthController:
             response.set_cookie('access_token', 
                                 access_token, 
                                 httponly=True, 
+                                samesite='Lax',
+                                secure=False,
                                 max_age=60 * 60 * 1000)
             return response, 200
         except ValueError as ve:

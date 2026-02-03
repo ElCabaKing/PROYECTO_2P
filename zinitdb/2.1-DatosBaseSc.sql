@@ -87,3 +87,33 @@ INSERT INTO tb_user (
     2,
     4
 );
+
+-- =========================
+-- MENUS
+-- =========================
+INSERT INTO tb_menus (nombre, path, icono, descripcion) VALUES
+('Dashboard', '/dashboard', 'home', 'Panel principal de control'),
+('Usuarios', '/users', 'users', 'Gestión de usuarios del sistema'),
+('Perfil', '/profile', 'user', 'Mi perfil de usuario'),
+('Inventario', '/inventory', 'box', 'Gestión de productos'),
+('Reportes', '/reports', 'bar-chart', 'Reportes del sistema'),
+('Configuración', '/settings', 'settings', 'Configuración del sistema');
+
+-- =========================
+-- ASIGNACIONES DE MENUS A ROLES
+-- =========================
+INSERT INTO tb_rol_menu (role_id, menu_id) VALUES
+(1, 1), -- Director: Dashboard
+(1, 2), -- Director: Usuarios
+(1, 3), -- Director: Perfil
+(1, 4), -- Director: Inventario
+(1, 5), -- Director: Reportes
+(1, 6), -- Director: Configuración
+(2, 1), -- Administrador: Dashboard
+(2, 2), -- Administrador: Usuarios
+(2, 3), -- Administrador: Perfil
+(2, 4), -- Administrador: Inventario
+(2, 5), -- Administrador: Reportes
+(3, 1), -- Empleado: Dashboard
+(3, 3), -- Empleado: Perfil
+(3, 4); -- Empleado: Inventario

@@ -49,3 +49,29 @@ ADD CONSTRAINT chk_director_sucursal
 CHECK (
     NOT (role_id = 1 AND sucursal_id IS NOT NULL)
 );
+
+-- ========================
+-- TABLAS DE MENUS Y PERMISOS
+-- ========================
+
+CREATE TABLE tb_menus (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    path VARCHAR(255) NOT NULL UNIQUE,
+    icono VARCHAR(100),
+    descripcion VARCHAR(255),
+    activo BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tb_rol_menu (
+    id SERIAL PRIMARY KEY,
+    role_id INT NOT NULL,
+    menu_id INT NOT NULL,
+    CONSTRAINT fk_rol_menu_role
+        FOREIGN KEY (role_id) REFERENCES tb_roles(Id) ON DELETE CASCADE,
+    CONSTRAINT fk_rol_menu_menu
+        FOREIGN KEY (menu_id) REFERENCES tb_menus(id) ON DELETE CASCADE,
+    CONSTRAINT uk_rol_menu_unique
+        UNIQUE (role_id, menu_id)
+);

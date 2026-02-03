@@ -111,6 +111,21 @@ class UserModel():
                 cur.close()
                 db_pool.putconn(conn)
         return roles
-        return True
+
+    def get_menus_by_role(self, role_id):
+        """Obtiene todos los menús disponibles para un rol"""
+        with db_pool.getconn() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT m.id, m.nombre, m.path, m.icono, m.descripcion
+                    FROM tb_menus m
+                    INNER JOIN tb_rol_menu rm ON m.id = rm.menu_id
+                    WHERE rm.role_id = %s AND m.activo = TRUE
+                    ORDER BY m.nombre;
+                """, (role_id,))
+                menus = cur.fetchall()
+                cur.close()
+                db_pool.putconn(conn)
+        return menus
     
 

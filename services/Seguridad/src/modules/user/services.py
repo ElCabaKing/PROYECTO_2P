@@ -79,6 +79,9 @@ class UserService:
         if not user:
             raise AppError("Usuario no encontrado", 404)
         
+        # Obtener menús disponibles del usuario según su rol
+        menus = self.user_model.get_menus_by_role(user['role_id'])
+        
         return {
             "id": user['id'],
             "cedula": user['cedula'],
@@ -88,7 +91,8 @@ class UserService:
             "role_id": user['role_id'],
             "sucursal_id": user['sucursal_id'],
             "restaurant_id": user['restaurant_id'],
-            "activo": user['activo']
+            "activo": user['activo'],
+            "menus": menus
         }
     
     def get_user_by_id(self, requested_user_id, requester_role, requester_sucursal_id, requester_restaurant_id):

@@ -18,6 +18,9 @@ export default function useApp() {
                 {
                     cedula,
                     contrasena: password
+                },
+                {
+                    withCredentials: true
                 }
             )
             if(log.data.logIn){
