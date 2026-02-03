@@ -2,7 +2,7 @@ from typing import Dict, Any
 from src.core.database import DataBaseHandle
 from src.shared.response import internal_response
 from .repository_interface import IHorarioRepository
-from .model import DAYS_OF_WEEK
+from .enum.horario import DAYS_OF_WEEK
 
 
 class HorarioRepository(IHorarioRepository):

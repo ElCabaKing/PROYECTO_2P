@@ -5,11 +5,12 @@ from src.shared.response import (
     response_success, response_inserted, response_updated,
     response_deleted, response_not_found, response_error, response_bad_request
 )
-from .dtos import CrearRestauranteDTO, ActualizarRestauranteDTO, RestauranteResponseDTO
+from .dtos import CrearRestauranteDTO, RestauranteResponseDTO, ActualizarRestauranteDTO
 from .service import RestauranteService
 
 
 class RestauranteController:
+
 
     def __init__(self):
         self.service = RestauranteService()
