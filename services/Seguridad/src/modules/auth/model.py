@@ -2,14 +2,14 @@ from src.config.db import db_pool
 from psycopg2.extras import RealDictCursor
 
 class AuthModel():
-    def get_user_by_cid(self, log_in_Data):
+    def get_user_by_cid(self, login_Data):
         with db_pool.getconn() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                         SELECT * FROM tb_user
                         WHERE cedula = %s;
                         """,(
-                            log_in_Data['Cedula'],))
+                            login_Data['cedula'],))
                 user_data = cur.fetchone()
                 cur.close()
                 db_pool.putconn(conn)
@@ -62,7 +62,7 @@ class AuthModel():
             with conn.cursor() as cur:
                 cur.execute("""
                         UPDATE tb_user
-                        SET contrasenahash = %s
+                        SET contrasena_hash = %s
                         WHERE id = %s;
                     """, (
                         new_password,

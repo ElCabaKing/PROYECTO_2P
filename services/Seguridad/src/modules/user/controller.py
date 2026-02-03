@@ -20,6 +20,6 @@ class UserController:
                 index_num = schema.load(request.args)
                 if g.sucursal_id is not None:
                         return self.user_service.fetch_user_list(index_num,g.sucursal_id)
-                return self.user_service.fetch_user_list(index_num,g.restauran_id)
+                return self.user_service.fetch_user_list_restaurant(index_num,g.restauran_id)
         
         

@@ -40,7 +40,7 @@ class AuthController:
     def recovery_request(self):
         schema = RecoveryUserPasswordRequest()
         user_data = schema.load(request.json)
-        self.recovery_service.validate_email(email=user_data['Correo'])
+        self.recovery_service.validate_email(email=user_data['correo'])
             
         return jsonify({"reponse": "Si existe un usuario con ese correo revise su bandeja para cambiar su contrasena"}), 200
 

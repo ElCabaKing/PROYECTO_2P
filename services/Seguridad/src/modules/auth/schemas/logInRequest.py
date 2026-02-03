@@ -2,5 +2,5 @@ from marshmallow import Schema, fields
 
 
 class LogInRequest(Schema):
-    Cedula = fields.String(required=True)
-    Contrasena = fields.String(required=True)
+    cedula = fields.String(required=True)
+    contrasena = fields.String(required=True)

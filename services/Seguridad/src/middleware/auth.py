@@ -21,7 +21,7 @@ def auth_required(f):
         claims = get_jwt()
         g.user_cid = get_jwt_identity()
         g.sucursal_id = claims.get("sucursal_id")
-        g.restauran_id = claims.get("restauran_id")
+        g.restauran_id = claims.get("restaurant_id")
         print(g.restauran_id)
         g.role = claims.get("role")
         g.user_id = claims.get("user_id")

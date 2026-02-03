@@ -1,3 +1,5 @@
+
+-- ROLES
 INSERT INTO tb_roles (Nombre) VALUES
 ('Director'),
 ('Administrador'),
@@ -9,17 +11,20 @@ INSERT INTO tb_restaurante (Nombre) VALUES
 ('Restaurante Costa Grill');
 
 -- SUCURSALES
-INSERT INTO tb_sucursal (Direccion, RestauranteId) VALUES
+INSERT INTO tb_sucursal (Direccion, restaurant_id) VALUES
 ('Av. Principal y Calle 10', 1),
 ('Mall Central - Local 45', 1),
 ('Av. Malecón y Olmedo', 2),
 ('Centro Comercial Norte', 2);
 
+-- =========================
 -- USUARIOS
+-- =========================
+
 -- DIRECTOR (SIN SUCURSAL)
 INSERT INTO tb_user (
-    Cedula, Nombre, Apellido, Correo, ContrasenaHash,
-    roleId, RestauranId, SucursalId
+    cedula, nombre, apellido, correo, contrasena_hash,
+    role_id, restaurant_id, sucursal_id
 ) VALUES (
     '0102030405',
     'Carlos',
@@ -33,8 +38,8 @@ INSERT INTO tb_user (
 
 -- ADMINISTRADORES
 INSERT INTO tb_user (
-    Cedula, Nombre, Apellido, Correo, ContrasenaHash,
-    roleId, RestauranId, SucursalId
+    cedula, nombre, apellido, correo, contrasena_hash,
+    role_id, restaurant_id, sucursal_id
 ) VALUES
 (
     '0912345678',
@@ -59,8 +64,8 @@ INSERT INTO tb_user (
 
 -- EMPLEADOS
 INSERT INTO tb_user (
-    Cedula, Nombre, Apellido, Correo, ContrasenaHash,
-    roleId, RestauranId, SucursalId
+    cedula, nombre, apellido, correo, contrasena_hash,
+    role_id, restaurant_id, sucursal_id
 ) VALUES
 (
     '0934567890',

@@ -13,39 +13,39 @@ CREATE TABLE tb_restaurante (
 CREATE TABLE tb_sucursal (
     Id SERIAL PRIMARY KEY,
     Direccion VARCHAR(200) NOT NULL,
-    RestauranteId INT NOT NULL,
+    restaurant_id INT NOT NULL,
     CONSTRAINT fk_sucursal_restaurante
-        FOREIGN KEY (RestauranteId) REFERENCES tb_restaurante(Id)
+        FOREIGN KEY (restaurant_id) REFERENCES tb_restaurante(Id)
 );
 
 CREATE TABLE tb_user (
-    Id SERIAL PRIMARY KEY,
-    Cedula VARCHAR(20) NOT NULL,
-    Nombre VARCHAR(100) NOT NULL,
-    Apellido VARCHAR(100) NOT NULL,
-    Correo VARCHAR(100) NOT NULL,
-    ContrasenaHash VARCHAR(100) NOT NULL,
-    roleId INT NOT NULL,
-    RestauranId INT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    cedula VARCHAR(20) NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) NOT NULL,
+    contrasena_hash VARCHAR(100) NOT NULL,
+    role_id INT NOT NULL,
+    restaurant_id INT NOT NULL,
     Activo BOOLEAN DEFAULT TRUE,
-    SucursalId INT,
+    sucursal_id INT,
     CONSTRAINT fk_user_role
-        FOREIGN KEY (roleId) REFERENCES tb_roles(Id),
+        FOREIGN KEY (role_id) REFERENCES tb_roles(Id),
     CONSTRAINT fk_user_restaurante
-        FOREIGN KEY (RestauranId) REFERENCES tb_restaurante(Id),
+        FOREIGN KEY (restaurant_id) REFERENCES tb_restaurante(Id),
     CONSTRAINT fk_user_sucursal
-        FOREIGN KEY (SucursalId) REFERENCES tb_sucursal(Id)
+        FOREIGN KEY (sucursal_id) REFERENCES tb_sucursal(Id)
 );
 
 
 ALTER TABLE tb_user
-ADD CONSTRAINT uq_tb_user_correo UNIQUE (Correo);
+ADD CONSTRAINT uq_tb_user_correo UNIQUE (correo);
 
 ALTER TABLE tb_user
-ADD CONSTRAINT uq_tb_user_cedula UNIQUE (Cedula);
+ADD CONSTRAINT uq_tb_user_cedula UNIQUE (cedula);
 
 ALTER TABLE tb_user
 ADD CONSTRAINT chk_director_sucursal
 CHECK (
-    NOT (roleId = 1 AND SucursalId IS NOT NULL)
+    NOT (role_id = 1 AND sucursal_id IS NOT NULL)
 );

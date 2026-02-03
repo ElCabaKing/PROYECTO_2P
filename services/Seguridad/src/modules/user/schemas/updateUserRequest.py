@@ -1,10 +1,10 @@
 from marshmallow import Schema, fields
 class UpdateUserRequest(Schema):
-    Nombre = fields.String()
-    Apellido = fields.String()
-    Correo = fields.String()
-    RoleId = fields.Integer()
-    SucursalId = fields.Integer()
+    nombre = fields.String()
+    apellido = fields.String()
+    correo = fields.String()
+    role_id = fields.Integer()
+    sucursal_id = fields.Integer()
     
     class Meta:
         unknown = 'EXCLUDE'

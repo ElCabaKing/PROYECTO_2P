@@ -3,9 +3,9 @@ import logging
 from core.exceptions import AppError
 from marshmallow import ValidationError
 from core.exceptions import UnauthorizedError
-from marshmallow import ValidationError
 from itsdangerous import SignatureExpired, BadSignature, BadTimeSignature
 from psycopg2.errors import UniqueViolation
+
 logger = logging.getLogger(__name__)
 
 def register_error_handlers(app):
@@ -21,9 +21,8 @@ def register_error_handlers(app):
         return jsonify({"error": "Error interno del servidor"}), 500
 
     @app.errorhandler(ValidationError)
-    def handle_schema_error(error):
+    def handle_validation_error(error):
         logger.warning("Error de validación: %s", error.messages)
-        logger.error(error.messages)
         return jsonify({
             "error": "Datos inválidos",
             "details": error.messages
@@ -34,31 +33,25 @@ def register_error_handlers(app):
         logger.warning("Error de autorización: %s", error.message)
         return jsonify({"error": error.message}), 401
     
-    @app.errorhandler(ValidationError)
-    def handle_validation_error(error):
-        logger.warning("Error de validacion: %s", error.messages)
-        return jsonify({
-            "error": "Campo no cumple con el formato requerido",
-            "details": error.messages
-        }), 400
         
     @app.errorhandler(SignatureExpired)
-    def handle_app_error(error):
-        logger.warning(error.message)
+    def handle_signature_expired(error):
+        logger.warning("Token expirado: %s", str(error))
         return jsonify({"error": "Token expirado"}), 410
     
     
     @app.errorhandler(BadSignature)
-    def handle_app_error(error):
-        logger.warning(error.message)
-        return jsonify({"error": error.message}), 400
+    def handle_bad_signature(error):
+        logger.warning("Firma inválida: %s", str(error))
+        return jsonify({"error": "Token inválido"}), 400
     
     @app.errorhandler(BadTimeSignature)
-    def handle_app_error(error):
-        logger.warning(error.message)
-        return jsonify({"error": error.message}), 400
+    def handle_bad_time_signature(error):
+        logger.warning("Firma temporal inválida: %s", str(error))
+        return jsonify({"error": "Token expirado o inválido"}), 400
     
         
     @app.errorhandler(UniqueViolation)
-    def handle_app_error(error):
+    def handle_unique_violation(error):
+        logger.warning("Violación de unicidad: %s", str(error))
         return jsonify({"error": "El registro ya existe"}), 400

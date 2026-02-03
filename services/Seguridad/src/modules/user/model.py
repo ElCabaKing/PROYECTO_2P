@@ -9,16 +9,17 @@ class UserModel():
             with conn.cursor() as cur:
                 cur.execute("""
                     INSERT INTO tb_user
-                    (cedula, nombre, apellido, correo, contrasenahash, roleid, sucursalid)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s);
+                    (cedula, nombre, apellido, correo, contrasena_hash, role_id, sucursal_id, restaurant_id)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
                 """, (
-                    user['Cedula'],
-                    user['Nombre'],
-                    user['Apellido'],
-                    user['Correo'],
-                    user['Contrasena'].decode("utf-8"),
-                    user['RoleId'],
-                    user['SucursalId']
+                    user['cedula'],
+                    user['nombre'],
+                    user['apellido'],
+                    user['correo'],
+                    user['contrasena'].decode("utf-8"),
+                    user['role_id'],
+                    user['sucursal_id'],
+                    user['restaurant_id'],
                 ))
                 conn.commit()
                 cur.close()
@@ -42,16 +43,16 @@ class UserModel():
         return users
     
     
-    def get_user_list_restaurant(self, num_offset, restaurant_id):
+    def get_user_list_restaurant(self, num_offset, restauran_id):
                 with db_pool.getconn() as conn:
                     with conn.cursor(cursor_factory=RealDictCursor) as cur:
                         cur.execute("""
                                 select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula from tb_user tu 
-                                    where tu.restauranid = %s
+                                    where tu.restaurant_id = %s
                                     order by tu.id 
                                     limit 10 offset %s;
                                     """,(
-                                        restaurant_id,
+                                        restauran_id,
                                         num_offset,
                                         ))
                         users= cur.fetchall()

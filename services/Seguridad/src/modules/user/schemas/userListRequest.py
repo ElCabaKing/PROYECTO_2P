@@ -2,4 +2,4 @@ from marshmallow import Schema, fields
 
 
 class UserListRequest(Schema):
-    indexNum= fields.Integer(required=True)
+    index_num= fields.Integer(required=True)
