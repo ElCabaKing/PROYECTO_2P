@@ -22,8 +22,6 @@ services:
     restart: unless-stopped
     env_file: 
       - ./services/Administracion/.env
-    depends_on:
-      postgres_base:
     volumes:
       - ./services/Administracion:/app
     ports:
