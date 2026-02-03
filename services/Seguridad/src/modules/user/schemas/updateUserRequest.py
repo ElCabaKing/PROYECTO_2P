@@ -6,6 +6,7 @@ class UpdateUserRequest(Schema):
     correo = fields.String(allow_none=True)
     role_id = fields.Integer(allow_none=True)
     sucursal_id = fields.Integer(allow_none=True)
+    activo = fields.Boolean(allow_none=True)
     
     class Meta:
         unknown = 'EXCLUDE'

@@ -36,32 +36,47 @@ class UserService:
             raise ValueError("Se requiere sucursal_id o restaurant_id")
     
     def update_user(self, user_id, update_data):
-        """
-        Actualiza un usuario con validación de roles.
-        Si se asciende a DIRECTOR, se elimina sucursal_id
-        Si se desciende DE DIRECTOR, se requiere sucursal_id
-        """
-        # Obtener usuario actual
         current_user = self.user_model.get_user_by_id(user_id)
         if not current_user:
             raise AppError("Usuario no encontrado", 404)
         
-        # Validar lógica de sucursal según role
+
         new_role_id = update_data.get('role_id', current_user['role_id'])
         new_sucursal_id = update_data.get('sucursal_id', current_user['sucursal_id'])
-        
-        # Si es ascendido a DIRECTOR, no debe tener sucursal_id
+
         if new_role_id == self.DIRECTOR_ROLE_ID:
             if new_sucursal_id is not None:
-                # Forzar eliminación de sucursal_id
+  
                 update_data['sucursal_id'] = None
         else:
-            # Si es descendido de DIRECTOR, debe tener sucursal_id
+           
             if current_user['role_id'] == self.DIRECTOR_ROLE_ID and new_role_id != self.DIRECTOR_ROLE_ID:
                 if new_sucursal_id is None:
                     raise AppError("Un usuario no director debe tener asignada una sucursal", 400)
         
-        # Ejecutar actualización
+
         result = self.user_model.update_user(user_id, update_data)
         return result
+    
+    def fetch_roles(self):
+        roles = self.user_model.get_all_roles()
+        return roles
+    
+    def get_current_user(self, user_id):
+
+        user = self.user_model.get_user_by_id(user_id)
+        if not user:
+            raise AppError("Usuario no encontrado", 404)
+        
+        return {
+            "id": user['id'],
+            "cedula": user['cedula'],
+            "nombre": user['nombre'],
+            "apellido": user['apellido'],
+            "correo": user['correo'],
+            "role_id": user['role_id'],
+            "sucursal_id": user['sucursal_id'],
+            "restaurant_id": user['restaurant_id'],
+            "activo": user['activo']
+        }
 

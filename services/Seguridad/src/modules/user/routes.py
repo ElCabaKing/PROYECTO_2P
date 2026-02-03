@@ -21,3 +21,13 @@ def fetch_user_list():
 def update_user(user_id):
     return user_controller.update_user(user_id)
 
+@user_bp.route('/roles', methods=['GET'])
+@auth_required
+def fetch_roles():
+    return user_controller.fetch_roles()
+
+@user_bp.route('/profile', methods=['GET'])
+@auth_required
+def get_current_user():
+    return user_controller.get_current_user()
+

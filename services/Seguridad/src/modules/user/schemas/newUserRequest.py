@@ -7,7 +7,10 @@ class NewUserRequest(Schema):
                            ))
     nombre = fields.String(required=True)
     apellido = fields.String(required=True)
-    correo = fields.String(required=True)
+    correo = fields.String(required=True, 
+                           validate=validate.Email(
+                               error='Correo invalido'
+                           ))
     contrasena = fields.String(required=True,
                                validate=validate.Length(
                                    min=8,

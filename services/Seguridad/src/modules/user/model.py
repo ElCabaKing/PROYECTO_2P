@@ -100,4 +100,17 @@ class UserModel():
         
         return True
     
+    def get_all_roles(self):
+        with db_pool.getconn() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT id, nombre FROM tb_roles
+                    ORDER BY id;
+                """)
+                roles = cur.fetchall()
+                cur.close()
+                db_pool.putconn(conn)
+        return roles
+        return True
+    
 
