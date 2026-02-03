@@ -11,8 +11,10 @@ class UserService:
     def __init__(self):
         self.user_model = UserModel()
     
-    # Constante: role_id para DIRECTOR
+    # Constantes de roles
     DIRECTOR_ROLE_ID = 1
+    ADMIN_ROLE_ID = 2
+    EMPLOYEE_ROLE_ID = 3
 
     def create_user(self, user):    
         password_hash = hashpw(user['contrasena'].encode(), gensalt())
@@ -26,19 +28,28 @@ class UserService:
         ).start()
         return response
 
-    def fetch_user_list(self, index_num, sucursal_id=None, restaurant_id=None):
+    def fetch_user_list(self, user_role, index_num, sucursal_id=None, restaurant_id=None):
+
+        # Validar que solo Director y Administrador puedan acceder
+        if user_role == self.EMPLOYEE_ROLE_ID:
+            raise AppError("Empleados no tienen permiso para ver la lista de usuarios")
+        
         num_offset = (index_num['index_num'] - 1) * 10
-        if sucursal_id:
-            return self.user_model.get_user_list(num_offset, sucursal_id)
-        elif restaurant_id:
+        
+        # Director ve todo el restaurante
+        if user_role == self.DIRECTOR_ROLE_ID and restaurant_id:
             return self.user_model.get_user_list_restaurant(num_offset, restaurant_id)
-        else:
-            raise ValueError("Se requiere sucursal_id o restaurant_id")
+        
+        # Administrador ve su sucursal
+        if user_role == self.ADMIN_ROLE_ID and sucursal_id:
+            return self.user_model.get_user_list(num_offset, sucursal_id)
+        
+        raise AppError("Parámetros inválidos para obtener lista de usuarios")
     
     def update_user(self, user_id, update_data):
         current_user = self.user_model.get_user_by_id(user_id)
         if not current_user:
-            raise AppError("Usuario no encontrado", 404)
+            raise AppError("Usuario no encontrado")
         
 
         new_role_id = update_data.get('role_id', current_user['role_id'])
@@ -78,5 +89,36 @@ class UserService:
             "sucursal_id": user['sucursal_id'],
             "restaurant_id": user['restaurant_id'],
             "activo": user['activo']
+        }
+    
+    def get_user_by_id(self, requested_user_id, requester_role, requester_sucursal_id, requester_restaurant_id):
+
+        if requester_role == self.EMPLOYEE_ROLE_ID:
+            raise AppError("Empleados no tienen permiso para ver datos de otros usuarios")
+        
+
+        target_user = self.user_model.get_user_by_id(requested_user_id)
+        if not target_user:
+            raise AppError("Usuario no encontrado")
+        
+       
+        if requester_role == self.DIRECTOR_ROLE_ID:
+            if target_user['restaurant_id'] != requester_restaurant_id:
+                raise AppError("No tienes permiso para ver este usuario")
+        
+        if requester_role == self.ADMIN_ROLE_ID:
+            if target_user['sucursal_id'] != requester_sucursal_id:
+                raise AppError("No tienes permiso para ver este usuario")
+        
+        return {
+            "id": target_user['id'],
+            "cedula": target_user['cedula'],
+            "nombre": target_user['nombre'],
+            "apellido": target_user['apellido'],
+            "correo": target_user['correo'],
+            "role_id": target_user['role_id'],
+            "sucursal_id": target_user['sucursal_id'],
+            "restaurant_id": target_user['restaurant_id'],
+            "activo": target_user['activo']
         }
 

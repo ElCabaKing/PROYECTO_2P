@@ -19,7 +19,7 @@ class UserController:
         def fetch_user_list(self):
                 schema = UserListRequest()
                 index_num = schema.load(request.args)
-                return self.user_service.fetch_user_list(index_num,g.sucursal_id,g.restaurant_id)
+                return self.user_service.fetch_user_list(g.role, index_num, g.sucursal_id, g.restaurant_id)
 
         
         def update_user(self, user_id):
@@ -42,6 +42,13 @@ class UserController:
         def get_current_user(self):
                 try:
                         user = self.user_service.get_current_user(g.user_id)
+                        return jsonify({"user": user}), 200
+                except Exception as e:
+                        return jsonify({"error": str(e)}), 500
+        
+        def get_user_by_id(self, user_id):
+                try:
+                        user = self.user_service.get_user_by_id(user_id, g.role, g.sucursal_id, g.restaurant_id)
                         return jsonify({"user": user}), 200
                 except Exception as e:
                         return jsonify({"error": str(e)}), 500

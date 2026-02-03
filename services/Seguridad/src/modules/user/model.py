@@ -32,7 +32,7 @@ class UserModel():
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                            select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id from tb_user tu 
-                            where tu.sucursalid = %s
+                            where tu.sucursal_id = %s
                             order by tu.id 
                             limit 10 offset %s;
                             """,(

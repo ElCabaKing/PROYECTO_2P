@@ -31,3 +31,8 @@ def fetch_roles():
 def get_current_user():
     return user_controller.get_current_user()
 
+@user_bp.route('/view/<int:user_id>', methods=['GET'])
+@auth_required
+def get_user_by_id(user_id):
+    return user_controller.get_user_by_id(user_id)
+

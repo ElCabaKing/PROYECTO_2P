@@ -15,7 +15,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     mail.init_app(app)
-    CORS(app, origins="localhost:3000")  # Configurar CORS para permitir solicitudes desde localhost:3000
+    CORS(app, origins="http://localhost:3000")  # Configurar CORS para permitir solicitudes desde localhost:3000
 
     setup_logger()
     register_error_handlers(app)
