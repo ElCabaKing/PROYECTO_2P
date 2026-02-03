@@ -31,7 +31,8 @@ class UserModel():
         with db_pool.getconn() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                           select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id from tb_user tu 
+                           select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id, tr.nombre as rol_nombre from tb_user tu 
+                            JOIN tb_roles tr ON tu.role_id = tr.id
                             where tu.sucursal_id = %s
                             order by tu.id 
                             limit 10 offset %s;
@@ -42,12 +43,23 @@ class UserModel():
                 users= cur.fetchall()
         return users
     
+    def get_user_count(self, sucursal_id):
+        with db_pool.getconn() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT COUNT(*) as total FROM tb_user
+                    WHERE sucursal_id = %s;
+                """, (sucursal_id,))
+                result = cur.fetchone()
+        return result['total'] if result else 0
+    
     
     def get_user_list_restaurant(self, num_offset, restauran_id):
                 with db_pool.getconn() as conn:
                     with conn.cursor(cursor_factory=RealDictCursor) as cur:
                         cur.execute("""
-                                select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id from tb_user tu 
+                                select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id, tr.nombre as rol_nombre from tb_user tu 
+                                    JOIN tb_roles tr ON tu.role_id = tr.id
                                     where tu.restaurant_id = %s
                                     order by tu.id 
                                     limit 10 offset %s;
@@ -57,6 +69,16 @@ class UserModel():
                                         ))
                         users= cur.fetchall()
                 return users
+    
+    def get_user_count_restaurant(self, restaurant_id):
+        with db_pool.getconn() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT COUNT(*) as total FROM tb_user
+                    WHERE restaurant_id = %s;
+                """, (restaurant_id,))
+                result = cur.fetchone()
+        return result['total'] if result else 0
     
     def get_user_by_id(self, user_id):
         with db_pool.getconn() as conn:

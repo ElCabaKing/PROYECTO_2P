@@ -4,6 +4,7 @@ from src.utils.Email_Sender import send_email
 from flask import current_app
 from core.exceptions import AppError
 import threading
+import math
 
 
 class UserService:
@@ -38,11 +39,17 @@ class UserService:
         
         # Director ve todo el restaurante
         if user_role == self.DIRECTOR_ROLE_ID and restaurant_id:
-            return self.user_model.get_user_list_restaurant(num_offset, restaurant_id)
+            users = self.user_model.get_user_list_restaurant(num_offset, restaurant_id)
+            total = self.user_model.get_user_count_restaurant(restaurant_id)
+            max_index = math.ceil(total / 10)
+            return {"users": users, "max_index": max_index}
         
         # Administrador ve su sucursal
         if user_role == self.ADMIN_ROLE_ID and sucursal_id:
-            return self.user_model.get_user_list(num_offset, sucursal_id)
+            users = self.user_model.get_user_list(num_offset, sucursal_id)
+            total = self.user_model.get_user_count(sucursal_id)
+            max_index = math.ceil(total / 10)
+            return {"users": users, "max_index": max_index}
         
         raise AppError("Parámetros inválidos para obtener lista de usuarios")
     

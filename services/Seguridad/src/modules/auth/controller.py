@@ -23,7 +23,7 @@ class AuthController:
                                 httponly=True, 
                                 samesite='Lax',
                                 secure=False,
-                                max_age=60 * 60 * 1000)
+                                max_age=4 * 60 * 60 * 1000)
             return response, 200
         except ValueError as ve:
             return jsonify({"error": str(ve)}), 400

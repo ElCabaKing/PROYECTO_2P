@@ -1,6 +1,14 @@
-
+'use client'
+import useUsers from "./hook"
+import { useEffect } from "react"
 
 function page() {
+  const { userList, fetchUsers } = useUsers()
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
   return (
     <div>User
       <div className="overflow-x-auto">
@@ -8,14 +16,10 @@ function page() {
           {/* head */}
           <thead>
             <tr>
-              <th>
-                <label>
-                  <input type="checkbox" className="checkbox" />
-                </label>
-              </th>
+
               <th>Name</th>
               <th>Job</th>
-              <th>Favorite Color</th>
+              <th>Favoritddde Color</th>
               <th></th>
             </tr>
           </thead>
