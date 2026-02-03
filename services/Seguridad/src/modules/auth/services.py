@@ -19,6 +19,6 @@ class AuthService:
                                         additional_claims={"role": user_data['role_id'],
                                                            "sucursal_id": user_data['sucursal_id'],
                                                            "user_id": user_data['id'],
-                                                           "restauran_id": user_data['restaurant_id']})
+                                                           "restaurant_id": user_data['restaurant_id']})
         return access_token
 

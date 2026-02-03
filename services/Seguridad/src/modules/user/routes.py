@@ -15,3 +15,9 @@ def new_user():
 @auth_required
 def fetch_user_list():
     return user_controller.fetch_user_list()
+
+@user_bp.route('/<int:user_id>', methods=['PUT'])
+@auth_required
+def update_user(user_id):
+    return user_controller.update_user(user_id)
+

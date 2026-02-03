@@ -31,7 +31,7 @@ class UserModel():
         with db_pool.getconn() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                           select tu.nombre , tu.apellido , tu.correo , tu.cedula from tb_user tu 
+                           select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id from tb_user tu 
                             where tu.sucursalid = %s
                             order by tu.id 
                             limit 10 offset %s;
@@ -47,7 +47,7 @@ class UserModel():
                 with db_pool.getconn() as conn:
                     with conn.cursor(cursor_factory=RealDictCursor) as cur:
                         cur.execute("""
-                                select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula from tb_user tu 
+                                select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id from tb_user tu 
                                     where tu.restaurant_id = %s
                                     order by tu.id 
                                     limit 10 offset %s;
@@ -58,5 +58,46 @@ class UserModel():
                         users= cur.fetchall()
                 return users
     
+    def get_user_by_id(self, user_id):
+        with db_pool.getconn() as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT id, cedula, nombre, apellido, correo, role_id, sucursal_id, restaurant_id, activo
+                    FROM tb_user
+                    WHERE id = %s;
+                """, (user_id,))
+                user = cur.fetchone()
+                cur.close()
+                db_pool.putconn(conn)
+        return user
+
+    def update_user(self, user_id, update_data):
+        with db_pool.getconn() as conn:
+            with conn.cursor() as cur:
+                set_clause = []
+                params = []
+                
+                for key, value in update_data.items():
+                    if key in ['nombre', 'apellido', 'correo', 'role_id', 'sucursal_id']:
+                        set_clause.append(f"{key} = %s")
+                        params.append(value)
+                
+                if not set_clause:
+                    return False
+                
+                params.append(user_id)
+                
+                query = f"""
+                    UPDATE tb_user
+                    SET {', '.join(set_clause)}
+                    WHERE id = %s;
+                """
+                
+                cur.execute(query, tuple(params))
+                conn.commit()
+                cur.close()
+                db_pool.putconn(conn)
+        
+        return True
     
 
