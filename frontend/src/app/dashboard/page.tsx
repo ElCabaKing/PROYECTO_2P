@@ -16,7 +16,6 @@ export default function DashboardHome() {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        // Obtenemos datos reales para los contadores
         const [rests, sucs] = await Promise.all([
           adminService.getRestaurantes().catch(() => []),
           adminService.getSucursales().catch(() => [])
@@ -36,9 +35,12 @@ export default function DashboardHome() {
     cargarDatos();
   }, []);
 
+  // Componente interno para el Skeleton de los números
+  const StatSkeleton = () => <div className="h-8 w-16 bg-gray-200 animate-pulse rounded"></div>;
+
   return (
     <div className="p-6 space-y-8 animate-fade-in">
-      {/* TÍTULO Y BIENVENIDA */}
+      {/* TÍTULO */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-primary">Resumen General</h1>
@@ -52,17 +54,17 @@ export default function DashboardHome() {
         </div>
       </div>
 
-      {/* TARJETAS DE ESTADÍSTICAS (STATS) */}
+      {/* TARJETAS DE ESTADÍSTICAS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         {/* Card 1: Restaurantes */}
         <div className="stats shadow bg-base-100 border-l-4 border-primary">
           <div className="stat">
-            <div className="stat-figure text-primary">
-              <Building2 size={32} />
-            </div>
+            <div className="stat-figure text-primary"><Building2 size={32} /></div>
             <div className="stat-title">Restaurantes</div>
-            <div className="stat-value text-primary">{loading ? '-' : stats.restaurantes}</div>
+            <div className="stat-value text-primary">
+              {loading ? <StatSkeleton /> : stats.restaurantes}
+            </div>
             <div className="stat-desc">Marcas registradas</div>
           </div>
         </div>
@@ -70,88 +72,78 @@ export default function DashboardHome() {
         {/* Card 2: Sucursales */}
         <div className="stats shadow bg-base-100 border-l-4 border-secondary">
           <div className="stat">
-            <div className="stat-figure text-secondary">
-              <Store size={32} />
-            </div>
+            <div className="stat-figure text-secondary"><Store size={32} /></div>
             <div className="stat-title">Sucursales</div>
-            <div className="stat-value text-secondary">{loading ? '-' : stats.sucursales}</div>
+            <div className="stat-value text-secondary">
+              {loading ? <StatSkeleton /> : stats.sucursales}
+            </div>
             <div className="stat-desc">Locales activos</div>
           </div>
         </div>
 
-        {/* Card 3: Reservas (Simulado) */}
+        {/* Card 3: Reservas */}
         <div className="stats shadow bg-base-100 border-l-4 border-accent">
           <div className="stat">
-            <div className="stat-figure text-accent">
-              <Users size={32} />
-            </div>
+            <div className="stat-figure text-accent"><Users size={32} /></div>
             <div className="stat-title">Reservas Hoy</div>
-            <div className="stat-value text-accent">{stats.reservasHoy}</div>
+            <div className="stat-value text-accent">
+              {loading ? <StatSkeleton /> : stats.reservasHoy}
+            </div>
             <div className="stat-desc">↗︎ 4 nuevas (Simulado)</div>
           </div>
         </div>
 
-        {/* Card 4: Ocupación (Simulado) */}
+        {/* Card 4: Ocupación */}
         <div className="stats shadow bg-base-100 border-l-4 border-info">
           <div className="stat">
-            <div className="stat-figure text-info">
-              <TrendingUp size={32} />
-            </div>
+            <div className="stat-figure text-info"><TrendingUp size={32} /></div>
             <div className="stat-title">Ocupación</div>
-            <div className="stat-value text-info">{stats.ocupacion}%</div>
+            <div className="stat-value text-info">
+              {loading ? <StatSkeleton /> : `${stats.ocupacion}%`}
+            </div>
             <div className="stat-desc">Promedio actual</div>
           </div>
         </div>
       </div>
 
-      {/* SECCIÓN INFERIOR: ACCESOS RÁPIDOS Y ACTIVIDAD */}
+      {/* SECCIÓN INFERIOR */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Columna Izquierda: Accesos Rápidos */}
+        {/* Accesos Rápidos */}
         <div className="card bg-base-100 shadow-xl col-span-1">
           <div className="card-body">
             <h2 className="card-title mb-4">Accesos Rápidos</h2>
             <div className="grid grid-cols-2 gap-4">
               <Link href="/dashboard/restaurantes" className="btn btn-outline btn-primary h-24 flex-col gap-2">
-                <Building2 size={24} />
-                Gestionar <br/> Restaurantes
+                <Building2 size={24} /> Gestionar <br/> Restaurantes
               </Link>
               <Link href="/dashboard/mesas" className="btn btn-outline btn-secondary h-24 flex-col gap-2">
-                <Users size={24} />
-                Configurar <br/> Mesas
+                <Users size={24} /> Configurar <br/> Mesas
               </Link>
               <Link href="/dashboard/promociones" className="btn btn-outline btn-accent h-24 flex-col gap-2">
-                <TrendingUp size={24} />
-                Crear <br/> Promoción
+                <TrendingUp size={24} /> Crear <br/> Promoción
               </Link>
               <Link href="/reservas" className="btn btn-outline btn-info h-24 flex-col gap-2">
-                <CalendarDays size={24} />
-                Nueva <br/> Reserva
+                <CalendarDays size={24} /> Nueva <br/> Reserva
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Columna Derecha: Tabla de Reservas Recientes (Simulada para visualización) */}
+        {/* Tabla Reciente */}
         <div className="card bg-base-100 shadow-xl lg:col-span-2">
           <div className="card-body">
             <div className="flex justify-between items-center mb-4">
               <h2 className="card-title">Próximas Reservas (Demo)</h2>
               <button className="btn btn-xs btn-ghost">Ver todas</button>
             </div>
-            
             <div className="overflow-x-auto">
               <table className="table table-zebra">
                 <thead>
                   <tr>
-                    <th>Hora</th>
-                    <th>Cliente</th>
-                    <th>Mesa</th>
-                    <th>Estado</th>
+                    <th>Hora</th><th>Cliente</th><th>Mesa</th><th>Estado</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Datos Falsos para rellenar el diseño */}
                   <tr>
                     <td>19:00</td>
                     <td className="font-bold">Juan Pérez</td>
@@ -176,7 +168,6 @@ export default function DashboardHome() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

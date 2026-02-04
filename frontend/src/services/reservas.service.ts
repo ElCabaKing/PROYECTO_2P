@@ -1,42 +1,71 @@
-import axios from 'axios';
+import api from '@/lib/axios';
 import { Reserva } from '@/types/reserva.types';
 
-// PUERTO 5002: Microservicio de Reservas
-const API_URL = 'http://localhost:5002'; 
+const BASE_ROUTE = '/reservations'; 
 
 export const reservasService = {
-  checkAvailability: async (sucursalId: string, date: string, people: number) => {
-    // Endpoint hipotético: GET /availability?date=2023-10-20&people=4
-    const { data } = await axios.get(`${API_URL}/availability`, {
-      params: { sucursal_id: sucursalId, date, people }
-    });
-    return data.data; 
-  },
+  createReserva: async (reservaData: Reserva) => {
+    try {
+      const clientePayload = {
+        nombre: reservaData.customer_name, 
+        apellido: ".", 
+        correo: reservaData.customer_email,
+        telefono: reservaData.customer_phone
+      };
 
-  createReserva: async (reserva: Reserva) => {
-    const { data } = await axios.post(`${API_URL}/reservas`, reserva);
-    return data.data;
-  },
+      let clienteId;
+      
+      try {
+        const resCliente = await api.post(`${BASE_ROUTE}/crear_cliente`, clientePayload);
+        clienteId = resCliente.data.id || resCliente.data.data?.id; 
+        if (!clienteId && resCliente.data.cliente_id) clienteId = resCliente.data.cliente_id;
 
-  getMyReservas: async (email: string) => {
-    const { data } = await axios.get(`${API_URL}/reservas?email=${email}`);
-    return data.data;
+      } catch (error) {
+        console.warn("Error registrando cliente (puede que ya exista):", error);
+        throw new Error("No se pudo registrar el cliente. Verifique si el correo ya está en uso.");
+      }
+
+      if (!clienteId) throw new Error("El sistema no pudo obtener el ID del cliente.");
+      const reservaPayload = {
+        fecha_reserva: reservaData.reservation_date, 
+        hora_reserva: reservaData.reservation_time,  
+        cantidad_personas: reservaData.number_of_people,
+        cliente_id: clienteId,
+        sucursal_id: parseInt(reservaData.sucursal_id), 
+        mesa_id: null, 
+        estado: "PENDING"
+      };
+
+      const { data } = await api.post(`${BASE_ROUTE}/crear_reserva`, reservaPayload);
+      return data;
+
+    } catch (error) {
+      console.error("Error en flujo de reserva:", error);
+      throw error;
+    }
   },
 
   getAllReservas: async (sucursalId?: string, date?: string) => {
-    let url = `${API_URL}/reservas`;
-    const params = new URLSearchParams();
-    if (sucursalId) params.append('sucursal_id', sucursalId);
-    if (date) params.append('date', date);
-    
-    if (params.toString()) url += `?${params.toString()}`;
-
-    const { data } = await axios.get(url); 
-    return data.data;
+    try {
+      const { data } = await api.get(`${BASE_ROUTE}/listar_reservas`);
+      const listaReservas = Array.isArray(data) ? data : data.data || [];
+      return listaReservas;
+    } catch (error) {
+      console.error("Error obteniendo reservas:", error);
+      return [];
+    }
   },
 
-  updateStatus: async (id: string, status: 'CONFIRMED' | 'CANCELLED' | 'NO_SHOW') => {
-    const { data } = await axios.patch(`${API_URL}/reservas/${id}/status`, { status });
-    return data.data;
+  checkAvailability: async (sucursalId: string, date: string, people: number) => {
+    return { available: true }; 
+  },
+
+  updateStatus: async (id: string, status: string) => {
+    const { data } = await api.patch(`${BASE_ROUTE}/reservas/${id}/status`, { status });
+    return data;
+  },
+
+  getMyReservas: async (email: string) => {
+    return []; 
   }
 };
