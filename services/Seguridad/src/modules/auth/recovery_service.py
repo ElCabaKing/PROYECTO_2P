@@ -36,7 +36,6 @@ class Recovery_Service:
     
     def restore_user_password(self, new_password,confirm_password,token):
         user_data =self.validate_token(token)
-        print("cponm",user_data)
         if new_password != confirm_password:
             raise AppError("Las contraseñas no coinciden")
         password_hash = hashpw(new_password.encode('utf-8'), gensalt())

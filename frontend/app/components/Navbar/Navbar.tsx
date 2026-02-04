@@ -9,6 +9,16 @@ function Navbar() {
     const [openMenu, setOpenMenu] = useState(false)
     const menuRef = React.useRef<HTMLDivElement>(null)
 
+    async function logOut() {
+        axios.post("http://localhost:5003/auth/logOut", {}, { withCredentials: true })
+            .then(() => {
+                router.push("/")
+            })
+            .catch((err) => {
+                console.log("Logout error:", err)
+            })
+    }
+
 
     useEffect(() => {
         let mounted = true
@@ -70,7 +80,7 @@ function Navbar() {
                     </div>
                 </div>
                 <div className="flex-1">
-                    <a className="btn btn-ghost text-xl">Proyecto 2</a>
+                    <a onClick={() => router.push('/home')} className="btn btn-ghost text-xl">Proyecto 2</a>
                     {userName && <span className="ml-4">Bienvenido  {userName}</span>}
                 </div>
                 <div className="flex-none relative" ref={menuRef}>
@@ -87,9 +97,7 @@ function Navbar() {
                     </button>
                     {openMenu && (
                         <ul className="absolute right-0 top-full mt-2 menu bg-base-100 rounded-box shadow w-52 z-50">
-                            <li><a>Perfil</a></li>
-                            <li><a>Configuración</a></li>
-                            <li><a>Cerrar sesión</a></li>
+                            <li onClick={() => logOut()} ><a>Cerrar sesión</a></li>
                         </ul>
                     )}
                 </div>

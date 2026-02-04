@@ -3,9 +3,10 @@ from psycopg2.extras import RealDictCursor
 
 class UserModel():
 
-    def insert_new_user(self, user):
+    def insert_new_user(self, user, restaurant_id):
         print(user)
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor() as cur:
                 cur.execute("""
                     INSERT INTO tb_user
@@ -19,69 +20,91 @@ class UserModel():
                     user['contrasena'].decode("utf-8"),
                     user['role_id'],
                     user['sucursal_id'],
-                    user['restaurant_id'],
+                    restaurant_id,
                 ))
                 conn.commit()
-                cur.close()
-                db_pool.putconn(conn)
-        return True
+            return True
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
 
 
     def get_user_list(self, num_offset, sucursal_id):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                           select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id, tr.nombre as rol_nombre from tb_user tu 
+                           select ts.Direccion, tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id, tr.nombre as rol_nombre from tb_user tu 
                             JOIN tb_roles tr ON tu.role_id = tr.id
+                            JOIN tb_sucursal ts ON tu.sucursal_id = ts.id
                             where tu.sucursal_id = %s
                             order by tu.id 
-                            limit 10 offset %s;
+                            limit 6 offset %s;
                             """,(
                                 sucursal_id,
                                 num_offset,
                                 ))
                 users= cur.fetchall()
-        return users
+                print(users)
+            return users
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
     def get_user_count(self, sucursal_id):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                     SELECT COUNT(*) as total FROM tb_user
                     WHERE sucursal_id = %s;
                 """, (sucursal_id,))
                 result = cur.fetchone()
-        return result['total'] if result else 0
+            return result['total'] if result else 0
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
     
     def get_user_list_restaurant(self, num_offset, restauran_id):
-                with db_pool.getconn() as conn:
-                    with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                        cur.execute("""
-                                select tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id, tr.nombre as rol_nombre from tb_user tu 
-                                    JOIN tb_roles tr ON tu.role_id = tr.id
-                                    where tu.restaurant_id = %s
-                                    order by tu.id 
-                                    limit 10 offset %s;
-                                    """,(
-                                        restauran_id,
-                                        num_offset,
-                                        ))
-                        users= cur.fetchall()
-                return users
+  
+        conn = db_pool.getconn()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                        select ts.Direccion, tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id, tr.nombre as rol_nombre from tb_user tu 
+                            JOIN tb_roles tr ON tu.role_id = tr.id
+                            LEFT JOIN tb_sucursal ts ON tu.sucursal_id = ts.id
+                            where tu.restaurant_id = %s
+                            order by tu.id 
+                            limit 6 offset %s;
+                            """,(
+                                restauran_id,
+                                num_offset,
+                                ))
+                users= cur.fetchall()
+            return users
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
     def get_user_count_restaurant(self, restaurant_id):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                     SELECT COUNT(*) as total FROM tb_user
                     WHERE restaurant_id = %s;
                 """, (restaurant_id,))
                 result = cur.fetchone()
-        return result['total'] if result else 0
+            return result['total'] if result else 0
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
     def get_user_by_id(self, user_id):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                     SELECT id, cedula, nombre, apellido, correo, role_id, sucursal_id, restaurant_id, activo
@@ -89,12 +112,14 @@ class UserModel():
                     WHERE id = %s;
                 """, (user_id,))
                 user = cur.fetchone()
-                cur.close()
-                db_pool.putconn(conn)
-        return user
+            return user
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
 
     def update_user(self, user_id, update_data):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor() as cur:
                 set_clause = []
                 params = []
@@ -117,26 +142,29 @@ class UserModel():
                 
                 cur.execute(query, tuple(params))
                 conn.commit()
-                cur.close()
-                db_pool.putconn(conn)
-        
-        return True
+            return True
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
     def get_all_roles(self):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                     SELECT id, nombre FROM tb_roles
                     ORDER BY id;
                 """)
                 roles = cur.fetchall()
-                cur.close()
-                db_pool.putconn(conn)
-        return roles
+            return roles
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
 
     def get_menus_by_role(self, role_id):
         """Obtiene todos los menús disponibles para un rol"""
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                     SELECT m.id, m.nombre, m.path, m.icono, m.descripcion
@@ -146,8 +174,24 @@ class UserModel():
                     ORDER BY m.nombre;
                 """, (role_id,))
                 menus = cur.fetchall()
-                cur.close()
-                db_pool.putconn(conn)
-        return menus
+            return menus
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
 
+    def get_branches_by_restaurant(self, restaurant_id):
+        """Obtiene todas las sucursales de un restaurante"""
+        conn = db_pool.getconn()
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT id, Direccion
+                    FROM tb_sucursal
+                    WHERE restaurant_id = %s
+                """, (restaurant_id,))
+                branches = cur.fetchall()
+            return branches
+        finally:
+            cur.close()
+            db_pool.putconn(conn)

@@ -6,13 +6,15 @@ export default function LogIn() {
     return (
         <div className="flex min-h-screen items-center justify-center">
             <div className="card card-side bg-base-100 shadow-sm">
-                <figure>
+                <figure className="p-4 bg-amber-50">
                     <img
-                        src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
-                        alt="Movie" />
+                        src="https://upload.wikimedia.org/wikipedia/commons/6/6d/LogoUGcolor.png"
+                        alt="Ug"
+                        className="w-24 h-auto object-contain" />
+
 
                 </figure>
-                <div className="card-body bg-white rounded-r-lg">
+                <div className="card-body bg-amber-50 rounded-r-lg">
                     <form onSubmit={(e) => { e.preventDefault(); logIn() }}>
                         <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
                             <p className="text-red-500 text-sm min-h-5">
@@ -35,7 +37,7 @@ export default function LogIn() {
                                 required />
 
 
-                            <a>Olvidaste la contraseña?</a>
+                            <a href="http://localhost:3000/recovery-page" className="link">Olvidaste la contraseña?</a>
 
                             <button className="btn w-64 rounded-full">Button</button>
                         </fieldset>

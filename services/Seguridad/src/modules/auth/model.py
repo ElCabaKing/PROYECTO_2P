@@ -3,7 +3,8 @@ from psycopg2.extras import RealDictCursor
 
 class AuthModel():
     def get_user_by_cid(self, login_Data):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                         SELECT * FROM tb_user
@@ -11,12 +12,14 @@ class AuthModel():
                         """,(
                             login_Data['cedula'],))
                 user_data = cur.fetchone()
-                cur.close()
-                db_pool.putconn(conn)
-        return user_data
+            return user_data
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
     def get_user_by_id(self, id):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                         SELECT id,correo FROM tb_user
@@ -24,12 +27,14 @@ class AuthModel():
                         """,(
                             id,))
                 user_data = cur.fetchone()
-                cur.close()
-                db_pool.putconn(conn)
-        return user_data
+            return user_data
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
     def get_user_by_email(self, email):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                                 select id, nombre, apellido from tb_user tu 
@@ -37,12 +42,15 @@ class AuthModel():
                                 """,(
                                     email,
                                     ))
-                user= cur.fetchone(
-                                )
-        return user
+                user= cur.fetchone()
+            return user
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
     def save_recovery_token(self, email, token):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor() as cur:
                 cur.execute("""
                         INSERT INTO tb_recovery_tokens
@@ -53,12 +61,14 @@ class AuthModel():
                         token
                     ))
                 conn.commit()
-                cur.close()
-                db_pool.putconn(conn)
-        return None
+            return None
+        finally:
+            cur.close()
+            db_pool.putconn(conn)
     
     def update_user_password(self, user_id, new_password):
-        with db_pool.getconn() as conn:
+        conn = db_pool.getconn()
+        try:
             with conn.cursor() as cur:
                 cur.execute("""
                         UPDATE tb_user
@@ -69,6 +79,7 @@ class AuthModel():
                         user_id
                     ))
                 conn.commit()
-                cur.close()
-                db_pool.putconn(conn)
-        return None
+            return None
+        finally:
+            cur.close()
+            db_pool.putconn(conn)

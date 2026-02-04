@@ -34,6 +34,7 @@ def create_app():
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config["JWT_ACCESS_COOKIE_NAME"] = "access_token"
     app.config["JWT_COOKIE_CSRF_PROTECT"] = False
+    
 
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
     

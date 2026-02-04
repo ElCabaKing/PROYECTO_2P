@@ -2,6 +2,7 @@ from flask_jwt_extended import create_access_token
 from .model import AuthModel
 from core.exceptions import UnauthorizedError
 from bcrypt import checkpw
+from datetime import timedelta
 
 
 class AuthService:
@@ -19,6 +20,7 @@ class AuthService:
                                         additional_claims={"role": user_data['role_id'],
                                                            "sucursal_id": user_data['sucursal_id'],
                                                            "user_id": user_data['id'],
-                                                           "restaurant_id": user_data['restaurant_id']})
+                                                           "restaurant_id": user_data['restaurant_id']},
+                                        expires_delta=timedelta(hours=4))
         return access_token
 

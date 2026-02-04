@@ -36,3 +36,7 @@ def get_current_user():
 def get_user_by_id(user_id):
     return user_controller.get_user_by_id(user_id)
 
+@user_bp.route('/roles-and-branches', methods=['GET'])
+@auth_required
+def fetch_roles_and_branches():
+    return user_controller.fetch_roles_and_branches()

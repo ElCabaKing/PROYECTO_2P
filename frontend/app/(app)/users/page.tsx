@@ -1,170 +1,56 @@
 'use client'
 import useUsers from "./hook"
 import { useEffect } from "react"
+import NewUserModal from "./NewUserModal"
 
 function page() {
-  const { userList, fetchUsers } = useUsers()
+  const { userList, fetchUsers, showModal, setShowModal, numIndex, setnumIndex, maxIndex} = useUsers()
+
 
   useEffect(() => {
     fetchUsers()
-  }, [])
+  }, [numIndex])
 
   return (
-    <div>User
+    <div>
       <div className="overflow-x-auto">
         <table className="table">
-          {/* head */}
           <thead>
             <tr>
-
-              <th>Name</th>
-              <th>Job</th>
-              <th>Favoritddde Color</th>
-              <th></th>
+              <th>Usuario</th>
+              <th>Rold</th>
+              <th>Sucursal</th>
+              <th><button className="btn" onClick={() => setShowModal(true)}>+</button></th>
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
-            <tr>
-              <th>
-                <label>
-                  <input type="checkbox" className="checkbox" />
-                </label>
-              </th>
-              <td>
-                <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    <div className="mask mask-squircle h-12 w-12">
-                      <img
-                        src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                        alt="Avatar Tailwind CSS Component" />
+            {userList.map((user) => (
+              <tr key={user.cedula}>
+                <td>
+                  <div className="flex items-center gap-3">
+                    <div>
+                      <div className="font-bold">{user.nombre} {user.apellido}</div>
+                      <div className="text-sm opacity-50">{user.cedula}</div>
                     </div>
                   </div>
-                  <div>
-                    <div className="font-bold">Hart Hagerty</div>
-                    <div className="text-sm opacity-50">United States</div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                Zemlak, Daniel and Leannon
-                <br />
-                <span className="badge badge-ghost badge-sm">Desktop Support Technician</span>
-              </td>
-              <td>Purple</td>
-              <th>
-                <button className="btn btn-ghost btn-xs">details</button>
-              </th>
-            </tr>
-            {/* row 2 */}
-            <tr>
-              <th>
-                <label>
-                  <input type="checkbox" className="checkbox" />
-                </label>
-              </th>
-              <td>
-                <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    <div className="mask mask-squircle h-12 w-12">
-                      <img
-                        src="https://img.daisyui.com/images/profile/demo/3@94.webp"
-                        alt="Avatar Tailwind CSS Component" />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="font-bold">Brice Swyre</div>
-                    <div className="text-sm opacity-50">China</div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                Carroll Group
-                <br />
-                <span className="badge badge-ghost badge-sm">Tax Accountant</span>
-              </td>
-              <td>Red</td>
-              <th>
-                <button className="btn btn-ghost btn-xs">details</button>
-              </th>
-            </tr>
-            {/* row 3 */}
-            <tr>
-              <th>
-                <label>
-                  <input type="checkbox" className="checkbox" />
-                </label>
-              </th>
-              <td>
-                <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    <div className="mask mask-squircle h-12 w-12">
-                      <img
-                        src="https://img.daisyui.com/images/profile/demo/4@94.webp"
-                        alt="Avatar Tailwind CSS Component" />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="font-bold">Marjy Ferencz</div>
-                    <div className="text-sm opacity-50">Russia</div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                Rowe-Schoen
-                <br />
-                <span className="badge badge-ghost badge-sm">Office Assistant I</span>
-              </td>
-              <td>Crimson</td>
-              <th>
-                <button className="btn btn-ghost btn-xs">details</button>
-              </th>
-            </tr>
-            {/* row 4 */}
-            <tr>
-              <th>
-                <label>
-                  <input type="checkbox" className="checkbox" />
-                </label>
-              </th>
-              <td>
-                <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    <div className="mask mask-squircle h-12 w-12">
-                      <img
-                        src="https://img.daisyui.com/images/profile/demo/5@94.webp"
-                        alt="Avatar Tailwind CSS Component" />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="font-bold">Yancy Tear</div>
-                    <div className="text-sm opacity-50">Brazil</div>
-                  </div>
-                </div>
-              </td>
-              <td>
-                Wyman-Ledner
-                <br />
-                <span className="badge badge-ghost badge-sm">Community Outreach Specialist</span>
-              </td>
-              <td>Indigo</td>
-              <th>
-                <button className="btn btn-ghost btn-xs">details</button>
-              </th>
-            </tr>
+                </td>
+                <td>
+                  <span className="badge badge-ghost badge-sm">{user.rol_nombre}</span>
+                </td>
+                <td>{user.direccion}</td>
+                <th>
+                  <button className="btn btn-ghost btn-xs">detalles</button>
+                </th>
+              </tr>))}
           </tbody>
-          {/* foot */}
-          <tfoot>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Job</th>
-              <th>Favorite Color</th>
-              <th></th>
-            </tr>
-          </tfoot>
         </table>
       </div>
+      <div className="join">
+        <button disabled={numIndex === 1} onClick={() => {numIndex===1? '': setnumIndex(numIndex - 1) }} className="join-item btn">«</button>
+        <button className="join-item btn">Page {numIndex}</button>
+        <button disabled={numIndex === maxIndex} onClick={() => {numIndex===maxIndex? '': setnumIndex(numIndex + 1) }} className="join-item btn">»</button>
+      </div>
+      {showModal && <NewUserModal showModal={showModal} onClose={() => { fetchUsers(); setShowModal(false) }} />}
     </div>
   )
 }

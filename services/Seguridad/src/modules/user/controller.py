@@ -13,7 +13,7 @@ class UserController:
         def new_user(self):
                 schema = NewUserRequest()
                 user_data = schema.load(request.json)
-                result = self.user_service.create_user(user_data)
+                result = self.user_service.create_user(user_data,g.restaurant_id)
                 return jsonify({"success": result}), 201
         
         def fetch_user_list(self):
@@ -54,3 +54,9 @@ class UserController:
                         return jsonify({"error": str(e)}), 500
 
 
+        def fetch_roles_and_branches(self):
+                try:
+                        data = self.user_service.fetch_roles_and_branches(g.restaurant_id)
+                        return jsonify(data), 200
+                except Exception as e:
+                        return jsonify({"error": str(e)}), 500

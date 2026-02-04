@@ -5,6 +5,8 @@ from flask import current_app
 from core.exceptions import AppError
 import threading
 import math
+import secrets
+import string
 
 
 class UserService:
@@ -16,15 +18,22 @@ class UserService:
     DIRECTOR_ROLE_ID = 1
     ADMIN_ROLE_ID = 2
     EMPLOYEE_ROLE_ID = 3
+    
+    # Constante para contrasenas
+    caracteres = string.ascii_letters + string.digits
 
-    def create_user(self, user):    
-        password_hash = hashpw(user['contrasena'].encode(), gensalt())
+    def create_user(self, user, restaurant_id):    
+        temp_password = ''.join(secrets.choice(self.caracteres) for _ in range(10))
+        password_hash = hashpw(temp_password.encode(), gensalt())
         user['contrasena'] = password_hash
-        response = self.user_model.insert_new_user(user)
+        response = self.user_model.insert_new_user(user, restaurant_id)
         app = current_app._get_current_object()
         threading.Thread(
         target=send_email,
-        args=(app, user['correo'],"Bienvenido","Bienvenido a nuestro equipo"),
+        args=(app, user['correo'],f"""Bienvenido a nuestro equipo
+              Puedes ingresar usando tu cedula con la contrasena {temp_password}
+              link= https//localhost:3000/""",
+              "Bienvenido"),
         daemon=True
         ).start()
         return response
@@ -35,20 +44,20 @@ class UserService:
         if user_role == self.EMPLOYEE_ROLE_ID:
             raise AppError("Empleados no tienen permiso para ver la lista de usuarios")
         
-        num_offset = (index_num['index_num'] - 1) * 10
+        num_offset = (index_num['index_num'] - 1) * 6
         
         # Director ve todo el restaurante
         if user_role == self.DIRECTOR_ROLE_ID and restaurant_id:
             users = self.user_model.get_user_list_restaurant(num_offset, restaurant_id)
             total = self.user_model.get_user_count_restaurant(restaurant_id)
-            max_index = math.ceil(total / 10)
+            max_index = math.ceil(total / 6)
             return {"users": users, "max_index": max_index}
         
         # Administrador ve su sucursal
         if user_role == self.ADMIN_ROLE_ID and sucursal_id:
             users = self.user_model.get_user_list(num_offset, sucursal_id)
             total = self.user_model.get_user_count(sucursal_id)
-            max_index = math.ceil(total / 10)
+            max_index = math.ceil(total / 6)
             return {"users": users, "max_index": max_index}
         
         raise AppError("Parámetros inválidos para obtener lista de usuarios")
@@ -133,3 +142,12 @@ class UserService:
             "activo": target_user['activo']
         }
 
+    def fetch_roles_and_branches(self, restaurant_id):
+            """Obtiene los roles y las sucursales de un restaurante"""
+            roles = self.user_model.get_all_roles()
+            branches = self.user_model.get_branches_by_restaurant(restaurant_id)
+            
+            return {
+                "roles": roles,
+                "branches": branches
+            }
