@@ -41,7 +41,7 @@ function NewUserModal(ModalProps: ModalProps) {
             setBranchList(res.data.branches)
         }
         catch (err) {
-            setErrorMessage("No se logro cargar los datos")
+            setErrorMessage("No se logro cargar los datos ")
         }
 
     }
