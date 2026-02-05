@@ -19,9 +19,11 @@ def auth_required(f):
             raise UnauthorizedError("Token inválido")
 
         claims = get_jwt()
+        print(claims)
         g.user_cid = get_jwt_identity()
         g.sucursal_id = claims.get("sucursal_id")
         g.restaurant_id = claims.get("restaurant_id")
+        print("sucursal",g.sucursal_id,"res", g.restaurant_id)
         print(g.sucursal_id, g.restaurant_id)
         g.role = claims.get("role")
         g.user_id = claims.get("user_id")

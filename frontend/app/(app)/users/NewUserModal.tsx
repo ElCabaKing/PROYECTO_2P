@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/app/services/auth.service";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -14,7 +15,7 @@ interface Rol {
 
 interface Branch {
     id: number
-    direccion: string
+    address: string
 };
 
 function NewUserModal(ModalProps: ModalProps) {
@@ -31,7 +32,7 @@ function NewUserModal(ModalProps: ModalProps) {
 
     async function getRolesAndBranches() {
         try {
-            const res = await axios.get('http://localhost:5003/user/roles-and-branches',
+            const res = await axios.get(`${BASE_URL}/user/roles-and-branches`,
                 {
                     withCredentials: true
                 }
@@ -55,7 +56,7 @@ function NewUserModal(ModalProps: ModalProps) {
     }, []);
 
     async function fetchNewUser() {
-        try{const res = await axios.post('http://localhost:5003/user/new',
+        try{const res = await axios.post(`${BASE_URL}/user/new`,
             {
                 cedula,
                 nombre,
@@ -116,7 +117,7 @@ function NewUserModal(ModalProps: ModalProps) {
                     <select value={sucursal ?? ""} disabled={cargo === 1} onChange={(e) => setSucursal(Number(e.target.value))} className="select">
                         <option value="" disabled={true}>Seleccionar Sucursal</option>
                         {branchList.map((sucursal) => (
-                            <option key={sucursal.id} value={sucursal.id}>{sucursal.direccion}</option>
+                            <option key={sucursal.id} value={sucursal.id}>{sucursal.address}</option>
                         ))}
                     </select>
                 </fieldset>

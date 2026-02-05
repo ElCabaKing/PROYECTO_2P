@@ -54,7 +54,7 @@ function ResetPasswordForm(Props: Props) {
               value={confirmPassword}
               required />
 
-            <button className="btn w-64 rounded-full">Button</button>
+            <button className="btn w-64 rounded-full">Cambiar</button>
           </fieldset>
         </form>
       </div>

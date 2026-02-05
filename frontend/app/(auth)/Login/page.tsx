@@ -39,7 +39,7 @@ export default function LogIn() {
 
                             <a href="http://localhost:3000/recovery-page" className="link">Olvidaste la contraseña?</a>
 
-                            <button className="btn w-64 rounded-full">Button</button>
+                            <button className="btn w-64 rounded-full">Iniciar Sesion</button>
                         </fieldset>
                     </form>
                 </div>

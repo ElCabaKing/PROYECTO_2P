@@ -90,7 +90,6 @@ class UserService:
         return roles
     
     def get_current_user(self, user_id):
-
         user = self.user_model.get_user_by_id(user_id)
         if not user:
             raise AppError("Usuario no encontrado", 404)
@@ -106,8 +105,8 @@ class UserService:
             "correo": user['correo'],
             "role_id": user['role_id'],
             "sucursal_id": user['sucursal_id'],
-            "restaurant_id": user['restaurant_id'],
-            "activo": user['activo'],
+            "restaurant_id": user['restaurante_id'],
+            "activo": user['is_active'],
             "menus": menus
         }
     

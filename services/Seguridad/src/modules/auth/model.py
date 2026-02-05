@@ -23,7 +23,7 @@ class AuthModel():
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                        SELECT id,correo FROM tb_user
+                        SELECT id,correo FROM usuarios
                         WHERE id = %s;
                         """,(
                             id,))
@@ -38,7 +38,7 @@ class AuthModel():
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                                select id, nombre, apellido from tb_user tu 
+                                select id, nombre, apellido from usuarios tu 
                                 where tu.correo = %s;
                                 """,(
                                     email,
@@ -48,31 +48,13 @@ class AuthModel():
         finally:
             cur.close()
             db_pool.putconn(conn)
-    
-    def save_recovery_token(self, email, token):
-        conn = db_pool.getconn()
-        try:
-            with conn.cursor() as cur:
-                cur.execute("""
-                        INSERT INTO tb_recovery_tokens
-                        (user_email, recovery_token)
-                        VALUES (%s, %s);
-                    """, (
-                        email,
-                        token
-                    ))
-                conn.commit()
-            return None
-        finally:
-            cur.close()
-            db_pool.putconn(conn)
-    
+
     def update_user_password(self, user_id, new_password):
         conn = db_pool.getconn()
         try:
             with conn.cursor() as cur:
                 cur.execute("""
-                        UPDATE tb_user
+                        UPDATE usuarios
                         SET contrasena_hash = %s
                         WHERE id = %s;
                     """, (

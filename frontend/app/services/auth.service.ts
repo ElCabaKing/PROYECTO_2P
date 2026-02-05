@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const BASE_URL = 'http://localhost/api/security'
+export const BASE_URL = 'http://localhost/api/security'
 export const authService = {
 
     ServicelogIn: async (cedula: string, password: string) => {
@@ -14,5 +14,14 @@ export const authService = {
                 withCredentials: true
             })
         return log.data
+    },
+
+    ServicelogOut: async () => {
+        await axios.post(
+            `${BASE_URL}/auth/logOut`,
+            {},
+            { withCredentials: true }
+        )
     }
+
 }

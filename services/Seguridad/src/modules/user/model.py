@@ -9,8 +9,8 @@ class UserModel():
         try:
             with conn.cursor() as cur:
                 cur.execute("""
-                    INSERT INTO tb_user
-                    (cedula, nombre, apellido, correo, contrasena_hash, role_id, sucursal_id, restaurant_id)
+                    INSERT INTO usuarios
+                    (cedula, nombre, apellido, correo, contrasena_hash, role_id, sucursal_id, restaurante_id)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
                 """, (
                     user['cedula'],
@@ -34,9 +34,9 @@ class UserModel():
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                           select ts.Direccion, tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id, tr.nombre as rol_nombre from tb_user tu 
-                            JOIN tb_roles tr ON tu.role_id = tr.id
-                            JOIN tb_sucursal ts ON tu.sucursal_id = ts.id
+                           select ts.address, tu.nombre , tu.apellido , tu.correo ,tu.is_active, tu.cedula, tu.role_id, tr.nombre as rol_nombre from usuarios tu 
+                            JOIN roles tr ON tu.role_id = tr.id
+                            JOIN sucursales ts ON tu.sucursal_id = ts.id
                             where tu.sucursal_id = %s
                             order by tu.id 
                             limit 6 offset %s;
@@ -56,7 +56,7 @@ class UserModel():
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                    SELECT COUNT(*) as total FROM tb_user
+                    SELECT COUNT(*) as total FROM usuarios
                     WHERE sucursal_id = %s;
                 """, (sucursal_id,))
                 result = cur.fetchone()
@@ -72,10 +72,10 @@ class UserModel():
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                        select ts.Direccion, tu.nombre , tu.apellido , tu.correo ,tu.activo, tu.cedula, tu.role_id, tr.nombre as rol_nombre from tb_user tu 
-                            JOIN tb_roles tr ON tu.role_id = tr.id
-                            LEFT JOIN tb_sucursal ts ON tu.sucursal_id = ts.id
-                            where tu.restaurant_id = %s
+                        select ts.address, tu.nombre , tu.apellido , tu.correo ,tu.is_active, tu.cedula, tu.role_id, tr.nombre as rol_nombre from usuarios tu 
+                            JOIN roles tr ON tu.role_id = tr.id
+                            LEFT JOIN sucursales ts ON tu.sucursal_id = ts.id
+                            where tu.restaurante_id = %s
                             order by tu.id 
                             limit 6 offset %s;
                             """,(
@@ -93,8 +93,8 @@ class UserModel():
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                    SELECT COUNT(*) as total FROM tb_user
-                    WHERE restaurant_id = %s;
+                    SELECT COUNT(*) as total FROM usuarios
+                    WHERE restaurante_id = %s;
                 """, (restaurant_id,))
                 result = cur.fetchone()
             return result['total'] if result else 0
@@ -107,8 +107,8 @@ class UserModel():
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                    SELECT id, cedula, nombre, apellido, correo, role_id, sucursal_id, restaurant_id, activo
-                    FROM tb_user
+                    SELECT id, cedula, nombre, apellido, correo, role_id, sucursal_id, restaurante_id, is_active
+                    FROM usuarios
                     WHERE id = %s;
                 """, (user_id,))
                 user = cur.fetchone()
@@ -135,7 +135,7 @@ class UserModel():
                 params.append(user_id)
                 
                 query = f"""
-                    UPDATE tb_user
+                    UPDATE usuarios
                     SET {', '.join(set_clause)}
                     WHERE id = %s;
                 """
@@ -152,7 +152,7 @@ class UserModel():
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                    SELECT id, nombre FROM tb_roles
+                    SELECT id, nombre FROM roles
                     ORDER BY id;
                 """)
                 roles = cur.fetchall()
@@ -168,8 +168,8 @@ class UserModel():
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
                     SELECT m.id, m.nombre, m.path, m.icono, m.descripcion
-                    FROM tb_menus m
-                    INNER JOIN tb_rol_menu rm ON m.id = rm.menu_id
+                    FROM menus m
+                    INNER JOIN rol_menu rm ON m.id = rm.menu_id
                     WHERE rm.role_id = %s AND m.activo = TRUE
                     ORDER BY m.nombre;
                 """, (role_id,))
@@ -186,9 +186,9 @@ class UserModel():
         try:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute("""
-                    SELECT id, Direccion
-                    FROM tb_sucursal
-                    WHERE restaurant_id = %s
+                    SELECT id, address
+                    FROM sucursales
+                    WHERE restaurante_id = %s
                 """, (restaurant_id,))
                 branches = cur.fetchall()
             return branches
