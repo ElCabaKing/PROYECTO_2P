@@ -1,27 +1,343 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Mi API Flask",
-    "description": "Documentación de mi API",
+    "title": "API Seguridad - Proyecto 2",
+    "description": "Servicio de seguridad y autenticación",
     "version": "1.0.0"
   },
-  "host": "localhost:5000",
+  "host": "localhost:5003",
   "basePath": "/",
   "schemes": ["http"],
   "paths": {
-    "/api/users/": {
-      "get": {
-        "summary": "Obtener usuarios",
-        "description": "Retorna una lista de usuarios",
+    "/auth/logIn": {
+      "post": {
+        "summary": "Login de usuario",
+        "description": "Autentica un usuario y retorna un token JWT",
+        "tags": ["Auth"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "cedula": {
+                  "type": "string",
+                  "example": "0102030405"
+                },
+                "contrasena": {
+                  "type": "string",
+                  "example": "password123"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Usuario encontrado"
+            "description": "Login exitoso, token en cookie"
+          },
+          "401": {
+            "description": "Credenciales inválidas"
+          }
+        }
+      }
+    },
+    "/auth/logOut": {
+      "post": {
+        "summary": "Logout de usuario",
+        "description": "Limpia la cookie de token y cierra la sesión",
+        "tags": ["Auth"],
+        "responses": {
+          "200": {
+            "description": "Logout exitoso"
+          }
+        }
+      }
+    },
+    "/auth/recovery_request": {
+      "post": {
+        "summary": "Solicitar recuperación de contraseña",
+        "description": "Envía un email con enlace para recuperar contraseña",
+        "tags": ["Auth"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "correo": {
+                  "type": "string",
+                  "example": "usuario@example.com"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email de recuperación enviado"
+          }
+        }
+      }
+    },
+    "/auth/recovery": {
+      "post": {
+        "summary": "Restaurar contraseña",
+        "description": "Actualiza la contraseña usando token de recuperación",
+        "tags": ["Auth"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string"
+                },
+                "new_password": {
+                  "type": "string",
+                  "example": "nuevaPassword123"
+                },
+                "confirm_password": {
+                  "type": "string",
+                  "example": "nuevaPassword123"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contraseña actualizada"
+          },
+          "400": {
+            "description": "Las contraseñas no coinciden"
+          }
+        }
+      }
+    },
+    "/user/new": {
+      "post": {
+        "summary": "Crear nuevo usuario",
+        "description": "Crea un nuevo usuario (requiere autenticación)",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "cedula": {
+                  "type": "string",
+                  "example": "1234567890"
+                },
+                "nombre": {
+                  "type": "string",
+                  "example": "Juan"
+                },
+                "apellido": {
+                  "type": "string",
+                  "example": "Pérez"
+                },
+                "correo": {
+                  "type": "string",
+                  "example": "juan@example.com"
+                },
+                "contrasena": {
+                  "type": "string",
+                  "example": "password123"
+                },
+                "role_id": {
+                  "type": "integer",
+                  "example": 2
+                },
+                "sucursal_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "restaurant_id": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Usuario creado exitosamente"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          }
+        }
+      }
+    },
+    "/user/list": {
+      "get": {
+        "summary": "Obtener lista de usuarios",
+        "description": "Obtiene lista de usuarios (Director: todos del restaurante, Admin: su sucursal, Empleado: denegado)",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "index_num",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de usuarios"
+          },
+          "403": {
+            "description": "Permiso denegado"
+          }
+        }
+      }
+    },
+    "/user/profile": {
+      "get": {
+        "summary": "Obtener usuario actual",
+        "description": "Retorna los datos del usuario autenticado (requiere autenticación)",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "Datos del usuario actual"
           },
           "404": {
             "description": "Usuario no encontrado"
           }
         }
       }
+    },
+    "/user/view/{user_id}": {
+      "get": {
+        "summary": "Obtener usuario por ID",
+        "description": "Retorna datos de un usuario específico (Director: cualquiera de su restaurante, Admin: su sucursal, Empleado: denegado)",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos del usuario"
+          },
+          "403": {
+            "description": "Permiso denegado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          }
+        }
+      }
+    },
+    "/user/{user_id}": {
+      "put": {
+        "summary": "Actualizar usuario",
+        "description": "Actualiza datos de un usuario (requiere autenticación)",
+        "tags": ["Users"],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nombre": {
+                  "type": "string"
+                },
+                "apellido": {
+                  "type": "string"
+                },
+                "correo": {
+                  "type": "string"
+                },
+                "role_id": {
+                  "type": "integer"
+                },
+                "sucursal_id": {
+                  "type": "integer"
+                },
+                "activo": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado exitosamente"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          }
+        }
+      }
+    },
+    "/user/roles": {
+      "get": {
+        "summary": "Obtener lista de roles",
+        "description": "Retorna todos los roles disponibles (requiere autenticación)",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "Lista de roles",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "roles": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "nombre": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT token en header o cookie"
     }
   }
 }

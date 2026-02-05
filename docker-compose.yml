@@ -13,21 +13,26 @@ services:
       - ./zinitdb:/docker-entrypoint-initdb.d
     networks:
       - proyecto2-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   administracion_service:
     container_name: "AdministracionService"
-    build:
-      context: ./services/Administracion
-      dockerfile: Dockerfile
+    build: ./services/Administracion
     restart: unless-stopped
     env_file: 
       - ./services/Administracion/.env
     depends_on:
       postgres_base:
+        condition: service_healthy
     volumes:
       - ./services/Administracion:/app
     ports:
       - "5001:5001"
+    command: "flask --app src.app run --host=0.0.0.0 --port=5001 --debug"
     networks:
       - proyecto2-network
 
@@ -37,7 +42,8 @@ services:
     env_file: 
       - ./services/Reservas/.env
     depends_on:
-      - postgres_base
+      postgres_base:
+        condition: service_healthy
     volumes:
       - ./services/Reservas:/app
     ports:
@@ -53,7 +59,8 @@ services:
     env_file: 
       - ./services/Seguridad/.env
     depends_on:
-      - postgres_base
+      postgres_base:
+        condition: service_healthy
     volumes:
       - ./services/Seguridad:/app
     ports:
@@ -70,7 +77,6 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
     command: "pnpm run dev"
     networks:
       - proyecto2-network
@@ -99,4 +105,3 @@ volumes:
 networks:
   proyecto2-network:
     driver: bridge
-    

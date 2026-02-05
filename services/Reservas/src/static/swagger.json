@@ -1,75 +1,27 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "title": "reserva-api",
-        "description": "Api del microservicio Reserva",
-        "version": "1.0.0"
-    },
-    "host": "localhost:5000",
-    "basePath": "/",
-    "schemes": ["http"],
-    "paths": {
-        "/api/clientes": {
-            "get": {
-                "summary": "Obtener clientes que tienen alguna reserva",
-                "responses": {
-                    "200": { "description": "Si hay clientes con reservas" },
-                    "404": { "description": "No hay clientes con reservas" }
-                }
-            },
-            "post": {
-                "summary": "Agregar un cliente",
-                "responses": {
-                    "200": { "description": "Si se pudo agregar el cliente" },
-                    "404": { "description": "No se pudo agregar el cliente" }
-                }
-            },
-            "patch": {
-                "summary": "Marcar que el cliente a llegado",
-                "responses": {
-                    "200": { "description": "Si se pudo agregar marcar el cliente" },
-                    "404": { "description": "No se pudo agregar marcar el cliente" }
-                }
-            }
-        },
-        "/api/reservas": {
-            "get": {
-                "summary": "Obtener reservas pendientes",
-                "responses": {
-                    "200": { "description": "Si hay reservas pendientes" },
-                    "404": { "description": "No hay reservas pendientes" }
-                }
-            },
-            "post": {
-                "summary": "Agregar una reserva",
-                "responses": {
-                    "200": { "description": "Si se pudo agregar la reserva" },
-                    "404": { "description": "No se pudo agregar la reserva" }
-                }
-            },
-            "delete": {
-                "summary": "Cancelar una reserva",
-                "responses": {
-                    "200": { "description": "Si se pudo cancelar la reserva" },
-                    "404": { "description": "No se pudo cancelar la reserva" }
-                }
-            },
-            "patch": {
-                "summary": "Confirmar una reserva",
-                "responses": {
-                    "200": { "description": "Si se pudo cancelar la reserva" },
-                    "404": { "description": "No se pudo cancelar la reserva" }
-                }
-            }
-        },
-        "/api/mesas": {
-            "get": {
-                "summary": "Obtener mesas disponibles",
-                "responses": {
-                    "200": { "description": "Si hay mesas disponibles" },
-                    "404": { "description": "No hay mesas disponibles" }
-                }
-            }
+  "swagger": "2.0",
+  "info": {
+    "title": "Mi API Flask",
+    "description": "Documentación de mi API",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5000",
+  "basePath": "/",
+  "schemes": ["http"],
+  "paths": {
+    "/api/users/": {
+      "get": {
+        "summary": "Obtener usuarios",
+        "description": "Retorna una lista de usuarios",
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          }
         }
+      }
     }
+  }
 }
