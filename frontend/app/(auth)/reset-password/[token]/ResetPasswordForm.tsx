@@ -15,7 +15,7 @@ function ResetPasswordForm(Props: Props) {
 
   async function resetPassword() {
     try {
-      const res = await axios.post("http://localhost:5003/auth/recovery",
+      const res = await axios.post("/api/security/auth/recovery",
         {
           new_password:password,
           confirm_password: confirmPassword,

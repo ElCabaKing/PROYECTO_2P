@@ -18,7 +18,7 @@ def create_app():
     app = Flask(__name__, static_folder='static')
 
     # CORS configuration
-    CORS(app, origins=Parametros.cors_origins, supports_credentials=True)
+    CORS(app, origins=["http://localhost:3000", "https://prueba.perrosefimeros.casa"], supports_credentials=True)  # Configurar CORS para permitir solicitudes desde localhost:3000
 
     # Register blueprints with /api/admin prefix
     app.register_blueprint(restaurantes_bp, url_prefix='/restaurantes')

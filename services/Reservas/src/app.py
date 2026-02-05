@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_swagger_ui import get_swaggerui_blueprint
 
 
@@ -6,6 +7,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 def create_app():
 
     app = Flask(__name__)
+    CORS(app, origins=["http://localhost:3000", "https://prueba.perrosefimeros.casa"], supports_credentials=True)  # Configurar CORS para permitir solicitudes desde localhost:3000
 
     # Swagger config
     SWAGGER_URL = '/swagger'

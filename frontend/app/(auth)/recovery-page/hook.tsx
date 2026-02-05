@@ -8,7 +8,7 @@ export default function useRecovery(){
 
     async function recovery(){
         try{
-            const res = await axios.post("http://localhost:5003/auth/recovery_request",
+            const res = await axios.post("/api/security/auth/recovery_request",
             {
                 correo
             })

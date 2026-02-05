@@ -14,7 +14,7 @@ export default function Sidebar() {
   }
 
   useEffect(() => {
-    axios.get("http://localhost/api/security/user/profile", { withCredentials: true })
+    axios.get("/api/security/user/profile", { withCredentials: true })
       .catch((err) => {
         console.log("Navbar fetch error:", err)
           router.push("/ ")
