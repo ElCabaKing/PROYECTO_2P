@@ -199,11 +199,11 @@ CREATE TABLE IF NOT EXISTS rol_menu (
 -- Cosas de reserva
 -- ================
 
-CREATE TABLE cliente (
-    cliente_id SERIAL PRIMARY KEY,
-    cliente_nombre VARCHAR(64) NOT NULL,
-    cliente_contacto VARCHAR(64) UNIQUE NOT NULL
-);
+-- CREATE TABLE cliente (
+--     cliente_id SERIAL PRIMARY KEY,
+--     cliente_nombre VARCHAR(64) NOT NULL,
+--     cliente_contacto VARCHAR(64) UNIQUE NOT NULL
+-- );
 
 CREATE TABLE producto (
     producto_id SERIAL PRIMARY KEY,
@@ -216,10 +216,10 @@ CREATE TABLE reserva (
     reserva_id SERIAL PRIMARY KEY,
     reserva_fi DATE NOT NULL, -- Fecha de Inicio
     reserva_ff DATE NOT NULL, -- Fecha de Fin
-    reserva_fr DATE NOT NULL, -- Fecha de Recordatorio
-    reserva_checkin BOOLEAN NOT NULL DEFAULT FALSE,
-    reserva_cid INT NOT NULL REFERENCES cliente(cliente_id) ON DELETE CASCADE,
-    reserva_rid INT NOT NULL REFERENCES restaurantes(id) ON DELETE CASCADE
+    reserva_fr DATE, -- Fecha de Recordatorio
+    reserva_estado VARCHAR(64) NOT NULL,
+    -- reserva_cid INT NOT NULL REFERENCES cliente(cliente_id) ON DELETE CASCADE,
+    reserva_sid INT NOT NULL REFERENCES sucursales(id) ON DELETE CASCADE
 );
 
 CREATE TABLE menurese ( -- Menu de la reserva (Reserva - Producto)

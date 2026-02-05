@@ -4,7 +4,7 @@ import { Reserva } from '../types/reserva.types';
 const BASE_ROUTE = '/api/reservations'; 
 
 export const reservasService = {
-  createReserva: async (reservaData: Reserva) => {
+  createReserva: async (reservaData: Reserva, sucursal: int) => {
     try {
       const clientePayload = {
         nombre: reservaData.customer_name, 
@@ -13,26 +13,24 @@ export const reservasService = {
         telefono: reservaData.customer_phone
       };
 
-      let clienteId;
-      
-      try {
-        const resCliente = await axios.post(`${BASE_ROUTE}/crear_cliente`, clientePayload);
-        clienteId = resCliente.data.id || resCliente.data.data?.id; 
-        if (!clienteId && resCliente.data.cliente_id) clienteId = resCliente.data.cliente_id;
-
-      } catch (error) {
-        console.warn("Error registrando cliente (puede que ya exista):", error);
-        throw new Error("No se pudo registrar el cliente. Verifique si el correo ya está en uso.");
-      }
-
-      if (!clienteId) throw new Error("El sistema no pudo obtener el ID del cliente.");
+      // let clienteId;
+      //
+      // try {
+      //   const resCliente = await axios.post(`${BASE_ROUTE}/crear_cliente`, clientePayload);
+      //   clienteId = resCliente.data.id || resCliente.data.data?.id; 
+      //   if (!clienteId && resCliente.data.cliente_id) clienteId = resCliente.data.cliente_id;
+      //
+      // } catch (error) {
+      //   console.warn("Error registrando cliente (puede que ya exista):", error);
+      //   throw new Error("No se pudo registrar el cliente. Verifique si el correo ya está en uso.");
+      // }
+      //
+      // if (!clienteId) throw new Error("El sistema no pudo obtener el ID del cliente.");
+      console.log(`asdf: ${sucursal}`)
       const reservaPayload = {
-        fecha_reserva: reservaData.reservation_date, 
-        hora_reserva: reservaData.reservation_time,  
-        cantidad_personas: reservaData.number_of_people,
-        cliente_id: clienteId,
-        sucursal_id: parseInt(reservaData.sucursal_id), 
-        mesa_id: null, 
+        fini: reservaData.reserva_fi, 
+        ffin: reservaData.reserva_ff,  
+        sucursal: parseInt(sucursal), 
         estado: "PENDING"
       };
 

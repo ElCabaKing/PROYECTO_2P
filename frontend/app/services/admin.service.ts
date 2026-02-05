@@ -59,7 +59,7 @@ export const adminService = {
   },
 
   createMesa: async (mesa: CrearMesaDTO) => {
-    const { data } = await axios.post(`${BASE_URL}/mesas`, mesa, getAuthHeaders());
+    const { data } = await axios.post(`${BASE_URL}/mesas/`, mesa, getAuthHeaders());
     return data.data;
   },
 

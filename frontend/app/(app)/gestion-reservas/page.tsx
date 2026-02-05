@@ -4,12 +4,18 @@ import { reservasService } from '../../services/reservas.service';
 import { adminService } from '../../services/admin.service'; 
 import { Reserva } from '../../types/reserva.types';
 import { Sucursal } from '../../types/sucursal.types';
-import { CalendarDays, CheckCircle, XCircle, Clock, Filter } from 'lucide-react';
+import { Plus, Trash2, Store, MapPin, CalendarDays, CheckCircle, XCircle, Clock, Filter } from 'lucide-react';
 
 export default function GestionReservasPage() {
   const [reservas, setReservas] = useState<Reserva[]>([]);
   const [sucursales, setSucursales] = useState<Sucursal[]>([]);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [formData, setFormData] = useState({
+    reserva_fi: '',
+    reserva_ff: ''
+  });
   
 
   const [selectedSucursal, setSelectedSucursal] = useState('');
@@ -40,6 +46,20 @@ export default function GestionReservasPage() {
     cargarReservas();
   }, [selectedSucursal, filterDate]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await reservasService.createReserva(formData, selectedSucursal);
+      setModalOpen(false);
+      cargarReservas();
+      alert('Reserva creada');
+    } catch (error) {
+      console.error(error);
+      alert('Error al crear');
+    }
+  };
+
+
 
   const handleStatusChange = async (id: string, newStatus: 'CONFIRMED' | 'CANCELLED') => {
     if(!confirm(`¿Estás seguro de cambiar el estado a ${newStatus}?`)) return;
@@ -54,9 +74,14 @@ export default function GestionReservasPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold flex items-center gap-2 mb-6 text-primary">
-        <CalendarDays /> Control de Reservas
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold flex items-center gap-2 mb-6 text-primary">
+          <CalendarDays /> Control de Reservas
+        </h1>
+        <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
+          <Plus size={20} /> Nueva Reserva
+        </button>
+      </div>
 
       {/* BARRA DE FILTROS */}
       <div className="bg-base-100 p-4 rounded-lg shadow mb-6 flex flex-wrap gap-4 items-end">
@@ -144,6 +169,39 @@ export default function GestionReservasPage() {
           </tbody>
         </table>
       </div>
+
+      {/* MODAL */}
+      {modalOpen && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg mb-4">Registrar Nuevo Restaurante</h3>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="form-control">
+                  <label className="label"><span className="label-text">Fecha Inicio *</span></label>
+                  <input 
+                    type="date" className="input input-bordered" required
+                    value={formData.reserva_fi}
+                    onChange={(e) => setFormData({...formData, reserva_fi: e.target.value})}
+                  />
+                </div>
+
+                <div className="form-control">
+                  <label className="label"><span className="label-text">Fecha Fin *</span></label>
+                  <input 
+                    type="date" className="input input-bordered" required
+                    value={formData.reserva_ff}
+                    onChange={(e) => setFormData({...formData, reserva_ff: e.target.value})}
+                  />
+                </div>
+
+              <div className="modal-action">
+                <button type="button" className="btn" onClick={() => setModalOpen(false)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary">Guardar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

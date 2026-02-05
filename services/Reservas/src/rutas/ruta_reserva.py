@@ -16,10 +16,10 @@ def _api_reserva():
         match request.method:
             case 'GET': return _listar_reservas()
             case 'POST': return _crear_reserva(
-                request.json['cliente'],
-                request.json['restaurante'],
+                request.json['sucursal'],
                 request.json['fini'],
                 request.json['ffin'],
+                request.json['estado'],
             )
             case 'DELETE': return _cancelar_reserva(request.json['id'])
             case 'PATCH': return _checkin_reserva(request.json['id'])
@@ -35,8 +35,8 @@ def _listar_reservas():
     else:
         return response_error(res['message'])
 
-def _crear_reserva(cliente, restaurante, fini, ffin):
-    res = crear_reserva(cliente, restaurante, fini, ffin)
+def _crear_reserva(sucursal, fini, ffin, estado):
+    res = crear_reserva(sucursal, fini, ffin, estado)
     if res['result']:
         return response_success(res['data'])
     else:

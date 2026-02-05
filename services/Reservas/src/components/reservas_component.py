@@ -20,28 +20,26 @@ def listar_reservas():
         HandleLogs.write_error(err)
         return internal_response(False, None, "Error en Reservas -> " + str(err))
 
-def crear_reserva(cliente, restaurante, fini, ffin):
+def crear_reserva(sucursal, fini, ffin, estado):
     try:
         sql = """
             INSERT INTO reserva (
-                reserva_fi
-                reserva_ff
-                reserva_fr
-                reserva_cid
-                reserva_rid
-            ) VALUES (%s, %s, %s, %s, %s)
+                reserva_fi,
+                reserva_ff,
+                reserva_sid,
+                reserva_estado
+            ) VALUES (%s, %s, %s, %s)
         """
 
         result_db = DataBaseHandle.ExecuteNonQuery(sql, (
             fini,
             ffin,
-            fini,
-            cliente,
-            restaurante
+            sucursal,
+            estado
         ))
 
         if not result_db['result']:
-            return internal_response(False, None, "Error al crear cliente")
+            return internal_response(False, None, "Error al crear la reserva")
 
         return internal_response(True, result_db['data'], "Exitoso")
 
