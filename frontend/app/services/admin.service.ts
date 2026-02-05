@@ -5,7 +5,7 @@ import { Mesa, CrearMesaDTO } from '../types/mesa.types';
 import { Horario, CrearHorarioDTO } from '../types/horario.types';
 import { Promocion, CrearPromocionDTO } from '../types/promocion.types';
 
-const BASE_URL = '/admin';
+const BASE_URL = '/api/admin';
 
 // Configuración para enviar el Token en cada petición
 const getAuthHeaders = () => {
@@ -16,12 +16,12 @@ const getAuthHeaders = () => {
 export const adminService = {
   
   getRestaurantes: async () => {
-    const { data } = await axios.get(`${BASE_URL}/restaurantes`, getAuthHeaders());
+    const { data } = await axios.get(`${BASE_URL}/restaurantes/`, getAuthHeaders());
     return data.data; 
   },
 
   createRestaurante: async (restaurante: CrearRestauranteDTO) => {
-    const { data } = await axios.post(`${BASE_URL}/restaurantes`, restaurante, getAuthHeaders());
+    const { data } = await axios.post(`${BASE_URL}/restaurantes/`, restaurante, getAuthHeaders());
     return data.data;
   },
 
@@ -32,15 +32,15 @@ export const adminService = {
 
   getSucursales: async (restauranteId?: string) => {
     const url = restauranteId 
-      ? `${BASE_URL}/sucursales?restaurante_id=${restauranteId}`
-      : `${BASE_URL}/sucursales`;
+      ? `${BASE_URL}/sucursales/?restaurante_id=${restauranteId}`
+      : `${BASE_URL}/sucursales/`;
       
     const { data } = await axios.get(url, getAuthHeaders());
     return data.data; 
   },
 
   createSucursal: async (sucursal: CrearSucursalDTO) => {
-    const { data } = await axios.post(`${BASE_URL}/sucursales`, sucursal, getAuthHeaders());
+    const { data } = await axios.post(`${BASE_URL}/sucursales/`, sucursal, getAuthHeaders());
     return data.data;
   },
 
@@ -51,8 +51,8 @@ export const adminService = {
 
   getMesas: async (sucursalId?: string) => {
     const url = sucursalId 
-      ? `${BASE_URL}/mesas?sucursal_id=${sucursalId}`
-      : `${BASE_URL}/mesas`; 
+      ? `${BASE_URL}/mesas/?sucursal_id=${sucursalId}`
+      : `${BASE_URL}/mesas/`; 
       
     const { data } = await axios.get(url, getAuthHeaders());
     return data.data;
@@ -69,12 +69,12 @@ export const adminService = {
   },
 
   getHorarios: async (sucursalId: string) => {
-    const { data } = await axios.get(`${BASE_URL}/horarios?sucursal_id=${sucursalId}`, getAuthHeaders());
+    const { data } = await axios.get(`${BASE_URL}/horarios/?sucursal_id=${sucursalId}`, getAuthHeaders());
     return data.data;
   },
 
   createHorario: async (horario: CrearHorarioDTO) => {
-    const { data } = await axios.post(`${BASE_URL}/horarios`, horario, getAuthHeaders());
+    const { data } = await axios.post(`${BASE_URL}/horarios/`, horario, getAuthHeaders());
     return data.data;
   },
 
@@ -84,12 +84,12 @@ export const adminService = {
   },
 
   getPromociones: async (sucursalId: string) => {
-    const { data } = await axios.get(`${BASE_URL}/promociones?sucursal_id=${sucursalId}`, getAuthHeaders());
+    const { data } = await axios.get(`${BASE_URL}/promociones/?sucursal_id=${sucursalId}`, getAuthHeaders());
     return data.data;
   },
 
   createPromocion: async (promocion: CrearPromocionDTO) => {
-    const { data } = await axios.post(`${BASE_URL}/promociones`, promocion, getAuthHeaders());
+    const { data } = await axios.post(`${BASE_URL}/promociones/`, promocion, getAuthHeaders());
     return data.data;
   },
 

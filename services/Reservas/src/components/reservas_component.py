@@ -6,7 +6,7 @@ from ..utils.general.response import internal_response
 def listar_reservas():
     try:
         sql = """
-            SELECT * FROM clientes;
+            SELECT * FROM reserva;
         """
 
         result_db = DataBaseHandle.getRecords(sql, 0)

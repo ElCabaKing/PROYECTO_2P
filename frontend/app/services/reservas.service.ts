@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Reserva } from '../types/reserva.types';
 
-const BASE_ROUTE = '/reservations'; 
+const BASE_ROUTE = '/api/reservations'; 
 
 export const reservasService = {
   createReserva: async (reservaData: Reserva) => {
@@ -36,7 +36,7 @@ export const reservasService = {
         estado: "PENDING"
       };
 
-      const { data } = await axios.post(`${BASE_ROUTE}/crear_reserva`, reservaPayload);
+      const { data } = await axios.post(`${BASE_ROUTE}/reserva`, reservaPayload);
       return data;
 
     } catch (error) {
@@ -47,7 +47,7 @@ export const reservasService = {
 
   getAllReservas: async (sucursalId?: string, date?: string) => {
     try {
-      const { data } = await axios.get(`${BASE_ROUTE}/listar_reservas`);
+      const { data } = await axios.get(`${BASE_ROUTE}/reserva`);
       const listaReservas = Array.isArray(data) ? data : data.data || [];
       return listaReservas;
     } catch (error) {

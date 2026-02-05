@@ -9,7 +9,7 @@ from ..utils.general.logs import HandleLogs
 from ..utils.general.response import response_success, response_error
 
 
-@common.app.route('/api/reserva', methods=['GET', 'POST', 'DELETE', 'PATCH'])
+@common.app.route('/reserva', methods=['GET', 'POST', 'DELETE', 'PATCH'])
 def _api_reserva():
     try:
         HandleLogs.write_log("Servicio reserva")
