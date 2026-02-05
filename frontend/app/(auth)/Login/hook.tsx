@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
-import axios from "axios"
 import { useRouter } from "next/navigation"
+import {authService} from '../../services/auth.service'
 
 
 export default function useApp() {
@@ -14,30 +14,18 @@ export default function useApp() {
 
     async function logIn() {
         try {
-            const log = await axios.post("http://localhost:5003/auth/logIn",
-                {
-                    cedula,
-                    contrasena: password
-                },
-                {
-                    withCredentials: true
-                }
-            )
-            if(log.data.logIn){
+            const log = await authService.ServicelogIn(cedula, password)
+            if(log.logIn){
                 router.push("/home")
             }
         }
         catch (e: unknown) {
-            if (axios.isAxiosError(e)) {
-                setErrorMessage(e.response?.data.details)
-                console.log(e.response?.data)
+            console.log(e)
+            if (e instanceof Error) {
+                setErrorMessage(e.message)
                 setShowError(true)
-            } else {
-                console.log("ERROR DESCONOCIDO:", e)
             }
         }
-
-
     }
 
     return {
