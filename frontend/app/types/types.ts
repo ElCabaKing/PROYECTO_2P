@@ -16,7 +16,7 @@ export interface User {
   role_id: number
   restaurant_id: number
   sucursal_id: number | null
-  direccion: string
+  address: string
   rol_nombre: string
   menus: Menu[]
 }

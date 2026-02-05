@@ -37,10 +37,7 @@ function page() {
                 <td>
                   <span className="badge badge-ghost badge-sm">{user.rol_nombre}</span>
                 </td>
-                <td>{user.direccion}</td>
-                <th>
-                  <button className="btn btn-ghost btn-xs">detalles</button>
-                </th>
+                <td>{user.address}</td>
               </tr>))}
           </tbody>
         </table>
