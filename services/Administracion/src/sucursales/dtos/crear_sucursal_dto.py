@@ -2,7 +2,7 @@ from marshmallow import Schema, fields, validate
 
 
 class CrearSucursalDTO(Schema):
-    restaurante_id = fields.UUID(required=True)
+    restaurante_id = fields.Int(required=True)
     name = fields.String(required=True, validate=validate.Length(min=2, max=150))
     address = fields.String(required=True, validate=validate.Length(min=5, max=500))
     phone = fields.String(allow_none=True, load_default=None, validate=validate.Length(max=20))

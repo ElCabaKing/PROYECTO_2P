@@ -32,7 +32,8 @@ services:
       - ./services/Administracion:/app
     ports:
       - "5001:5001"
-    command: "flask --app src.app run --host=0.0.0.0 --port=5001 --debug"
+    command: "python run.py"
+    # command: "flask --app src.app run --host=0.0.0.0 --port=5001 --debug"
     networks:
       - proyecto2-network
 
@@ -48,7 +49,10 @@ services:
       - ./services/Reservas:/app
     ports:
       - "5002:5002" 
-    command: "flask --app src.app run --host=0.0.0.0 --port=5002 --debug"
+    environment:
+      - FLASK_DEBUG=1
+    command: "python app.py"
+    # command: "flask --app src.app run --host=0.0.0.0 --port=5002 --debug"
     networks:
       - proyecto2-network
 

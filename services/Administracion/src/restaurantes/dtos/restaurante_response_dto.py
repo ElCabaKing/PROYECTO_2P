@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 
 
 class RestauranteResponseDTO(Schema):
-    id = fields.UUID(required=True)
+    id = fields.Int(required=True)
     name = fields.String(required=True)
     legal_name = fields.String(allow_none=True)
     tax_id = fields.String(allow_none=True)

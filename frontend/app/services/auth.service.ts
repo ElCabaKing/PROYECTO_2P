@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export const BASE_URL = 'http://localhost/api/security'
+export const BASE_URL = '/api/security'
 export const authService = {
 
     ServicelogIn: async (cedula: string, password: string) => {

@@ -16,7 +16,9 @@ class SucursalController:
         self.response_schema = SucursalResponseDTO()
 
     def obtener_todos(self, restaurante_id: Optional[str] = None) -> Tuple[Dict[str, Any], int]:
+        print("asdf")
         result = self.service.obtener_todos(restaurante_id)
+        print("asdf")
         if not result['result']:
             return response_error(result['message'])
 

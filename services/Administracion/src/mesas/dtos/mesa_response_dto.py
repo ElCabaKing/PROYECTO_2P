@@ -2,8 +2,8 @@ from marshmallow import Schema, fields
 
 
 class MesaResponseDTO(Schema):
-    id = fields.UUID(required=True)
-    sucursal_id = fields.UUID(required=True)
+    id = fields.Int(required=True)
+    sucursal_id = fields.Int(required=True)
     sucursal_name = fields.String(allow_none=True)  # From JOIN
     table_number = fields.String(required=True)
     capacity_min = fields.Integer(required=True)

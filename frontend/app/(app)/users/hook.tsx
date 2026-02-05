@@ -10,7 +10,7 @@ export default function useUsers() {
     const [maxIndex, setmaxIndex] = useState(1)
     
     async function fetchUsers() {
-        const res = await axios.get("http://localhost:5003/user/list",
+        const res = await axios.get("/api/security/user/list",
             {
                 params :{
                     index_num: numIndex

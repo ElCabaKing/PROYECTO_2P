@@ -3,7 +3,7 @@ import { LayoutData } from "@/app/types/types"
 import axios from "axios"
 
 export async function getLayoutData(): Promise<LayoutData> {
-  try{const res = await axios.get('http://localhost:5003/user/profile',
+  try{const res = await axios.get('/api/security/user/profile',
     {
         withCredentials: true,
     }

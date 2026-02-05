@@ -2,8 +2,8 @@ from marshmallow import Schema, fields
 
 
 class SucursalResponseDTO(Schema):
-    id = fields.UUID(required=True)
-    restaurante_id = fields.UUID(required=True)
+    id = fields.Int(required=True)
+    restaurante_id = fields.Int(required=True)
     restaurante_name = fields.String(allow_none=True)  # From JOIN
     name = fields.String(required=True)
     address = fields.String(required=True)

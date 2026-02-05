@@ -2,7 +2,7 @@ from marshmallow import Schema, fields, validate, validates, validates_schema, V
 
 
 class CrearPromocionDTO(Schema):
-    sucursal_id = fields.UUID(required=True)
+    sucursal_id = fields.Int(required=True)
     name = fields.Str(required=True, validate=validate.Length(min=3, max=150))
     description = fields.Str(allow_none=True, load_default=None)
     discount_percentage = fields.Decimal(places=2, allow_none=True, load_default=None)
