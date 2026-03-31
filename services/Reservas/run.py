@@ -1,7 +1,13 @@
-from src.app import create_app
 from dotenv import load_dotenv
 load_dotenv()
-app = create_app()
+
+import common
+
+common.init()
+
+import src.rutas.zi
+import src.rutas.ruta_cliente
+import src.rutas.ruta_reserva
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    common.app.run(debug=True)

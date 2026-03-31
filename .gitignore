@@ -1,0 +1,4 @@
+frontend/node_modules
+frontend/.next
+frontend/next-end.d.ts
+**/__pycache__
